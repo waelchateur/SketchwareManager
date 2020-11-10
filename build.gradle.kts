@@ -1,10 +1,12 @@
 plugins {
     kotlin("jvm") version "1.4.10"
     kotlin("plugin.serialization") version "1.4.10"
+    maven
+    `maven-publish`
 }
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+group = "io.sketchware.projects"
+version = "1.0"
 
 repositories {
     mavenCentral()
