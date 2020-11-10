@@ -36,10 +36,10 @@ class ProjectsManager(private val dirs: SketchwareDirs) {
         val baseInfo: SketchwareProjectBaseInfo =
                 Json.decodeFromString(String(ProjectFileDecryptor.decrypt("${dirs.myscList}/$id/project")))
         val resources = getResources(baseInfo.scId.toInt())
-        val dataDir = File("${dirs.data?.absoluteFile}/${baseInfo.scId.toInt()}")
-        val bakDir = File("${dirs.bak?.absoluteFile}/${baseInfo.scId.toInt()}")
-        val myscDir = File("${dirs.mysc?.absoluteFile}/${baseInfo.scId.toInt()}")
-        return SketchwareProject(baseInfo, File("${dirs.myscList}/$id/project"), resources, dataDir, bakDir, myscDir)
+        val dataDir = File("${dirs.data?.absolutePath}/${baseInfo.scId.toInt()}")
+        val bakDir = File("${dirs.bak?.absolutePath}/${baseInfo.scId.toInt()}")
+        val myscDir = File("${dirs.mysc?.absolutePath}/${baseInfo.scId.toInt()}")
+        return SketchwareProject(baseInfo, File("${dirs.myscList.absolutePath}/$id/project"), resources, dataDir, bakDir, myscDir)
     }
 
     val nextFreeId: Int get() = getFreeId(601)
