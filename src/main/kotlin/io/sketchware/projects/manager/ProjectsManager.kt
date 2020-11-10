@@ -47,7 +47,7 @@ class ProjectsManager(private val dirs: SketchwareDirs) {
     private fun getFreeId(startId: Int): Int {
         dirs.myscList.listFiles()!!.forEach {
             if (it.name == startId.toString())
-                return startId + 1
+                return getFreeId(startId + 1)
         }
         return startId
     }
