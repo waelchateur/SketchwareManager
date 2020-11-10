@@ -8,18 +8,18 @@ import kotlinx.serialization.json.Json
 import java.io.File
 
 data class SketchwareProject(
-    /** Base info of project (name, package, etc) */
-    val infoSketchware: SketchwareProjectBaseInfo,
-    /** Project info file */
-    val infoFile: File,
-    /** class with lists of files paths */
-    val resources: SketchwareProjectResources,
-    /** Folder with project data */
-    val dataDir: File?,
-    /** Folder with project data */
-    val bakDir: File?,
-    /** Folder with builds & apks and etc */
-    val myscDir: File?
+        /** Base info of project (name, package, etc) */
+        val infoSketchware: SketchwareProjectBaseInfo,
+        /** Project info file */
+        val infoFile: File,
+        /** class with lists of files paths */
+        val resources: SketchwareProjectResources,
+        /** Folder with project data */
+        val dataDir: File?,
+        /** Folder with project data */
+        val bakDir: File?,
+        /** Folder with builds & apks and etc */
+        val myscDir: File?
 ) {
 
     init {
@@ -80,7 +80,8 @@ data class SketchwareProject(
          */
         fun create(infoSketchware: SketchwareProjectBaseInfo, infoFile: File) {
             infoFile.writeBytes(
-                ProjectFileDecryptor.encrypt(Json.encodeToString(infoSketchware)) ?: throw SketchwareEncryptException()
+                    ProjectFileDecryptor.encrypt(Json.encodeToString(infoSketchware))
+                            ?: throw SketchwareEncryptException()
             )
         }
 

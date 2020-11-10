@@ -1,8 +1,8 @@
 package io.sketchware.projects.manager
 
-import io.sketchware.projects.model.SketchwareProjectBaseInfo
 import io.sketchware.projects.model.SketchwareDirs
 import io.sketchware.projects.model.SketchwareProject
+import io.sketchware.projects.model.SketchwareProjectBaseInfo
 import io.sketchware.projects.model.SketchwareProjectResources
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -14,7 +14,7 @@ class ProjectsManager(private val dirs: SketchwareDirs) {
             val array = ArrayList<SketchwareProject>()
             dirs.myscList.listFiles()?.forEach {
                 val baseInfo: SketchwareProjectBaseInfo =
-                    Json.decodeFromString(String(ProjectFileDecryptor.decrypt("${it.path}/project")))
+                        Json.decodeFromString(String(ProjectFileDecryptor.decrypt("${it.path}/project")))
                 val resources = getResources(baseInfo.scId.toInt())
                 val dataDir = File("${dirs.data?.absoluteFile}/${baseInfo.scId.toInt()}")
                 val bakDir = File("${dirs.bak?.absoluteFile}/${baseInfo.scId.toInt()}")
@@ -34,11 +34,22 @@ class ProjectsManager(private val dirs: SketchwareDirs) {
 
     fun getById(id: Int): SketchwareProject {
         val baseInfo: SketchwareProjectBaseInfo =
-            Json.decodeFromString(String(ProjectFileDecryptor.decrypt("${dirs.myscList}/$id/project")))
+                Json.decodeFromString(String(ProjectFileDecryptor.decrypt("${dirs.myscList}/$id/project")))
         val resources = getResources(baseInfo.scId.toInt())
         val dataDir = File("${dirs.data?.absoluteFile}/${baseInfo.scId.toInt()}")
         val bakDir = File("${dirs.bak?.absoluteFile}/${baseInfo.scId.toInt()}")
         val myscDir = File("${dirs.mysc?.absoluteFile}/${baseInfo.scId.toInt()}")
         return SketchwareProject(baseInfo, File("${dirs.myscList}/$id/project"), resources, dataDir, bakDir, myscDir)
     }
+
+    val nextFreeId: Int get() = getFreeId(601)
+
+    private fun getFreeId(startId: Int): Int {
+        dirs.myscList.listFiles()!!.forEach {
+            if (it.name == startId.toString())
+                return startId + 1
+        }
+        return startId
+    }
+
 }
