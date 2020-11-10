@@ -11,7 +11,7 @@ repositories {
 After it add next:
 ```groovy
 dependencies {
-	implementation 'com.github.justneon33:Sketchware-Project-Manager:1.0'
+	implementation 'com.github.justneon33:Sketchware-Project-Manager:alpha-1.0'
 }
 ```
 ### Kotlin DSL plugin
@@ -24,7 +24,7 @@ repositories {
 After it add next:
 ```kotlin
 dependencies {
-	implementation("com.github.justneon33:Sketchware-Project-Manager:1.0")
+	implementation("com.github.justneon33:Sketchware-Project-Manager:alpha-1.0")
 }
 ```
 
