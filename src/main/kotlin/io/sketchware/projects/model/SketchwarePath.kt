@@ -7,5 +7,8 @@ data class SketchwareResourcesPaths(
         val images: File? = null,
         val fonts: File? = null,
         val sounds: File? = null
-)
+) {
+    constructor(icons: String, images: String, fonts: String, sounds: String) :
+            this(File(icons), File(images), File(fonts), File(sounds))
+}
 
