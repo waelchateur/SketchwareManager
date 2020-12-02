@@ -1,6 +1,6 @@
-# Sketchware Projects Manager
+# 📂 Sketchware Projects Manager
 The best library for interacting with Sketchware projects. Change project info, delete, copy, create project and so on.
-## Implementation
+## 🛠 Implementation
 ### For Gradle on Groovy
 Add it to root build.gradle:
 ```groovy
@@ -27,6 +27,7 @@ dependencies {
 	implementation("com.github.justneon33:Sketchware-Project-Manager:stable-1.2")
 }
 ```
-
-More information on how it works read here: https://github.com/justneon33/Sketchware-Project-Manager/wiki
+## 📜 Instructions
+We have wiki where a lot useful info - https://github.com/justneon33/Sketchware-Project-Manager/wiki.
+Also if wouldn't find something about your question create issue.
 
