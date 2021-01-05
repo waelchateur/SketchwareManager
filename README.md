@@ -30,4 +30,7 @@ dependencies {
 ## 📜 Instructions
 We have wiki where a lot useful info - https://github.com/justneon33/Sketchware-Project-Manager/wiki.
 Also if wouldn't find something about your question create issue.
-
+## ❗ There also a new versions to check:
+### Dev version 🧪
+Full rewrite to coroutine-based library for managing sketchware projects, collections and etc.
+[Check on dev branch](https://github.com/y9neon/Sketchware-Project-Manager/tree/dev).
