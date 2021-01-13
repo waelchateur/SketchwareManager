@@ -4,8 +4,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ProguardConfig(
-    /* boolean string. sw pro dev is idiot */
+    /**
+     * String representation of boolean.
+     * Responsible for status of Proguard.
+     */
     val enabled: String,
-    /* boolean string. sw pro dev is idiot */
+    /**
+     * String representation of boolean.
+     * Responsible for the on/off state of the debug file generations.
+     */
     val debug: String
 )
