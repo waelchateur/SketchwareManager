@@ -9,7 +9,7 @@ import io.sketchware.utils.readFile
 import io.sketchware.utils.toModel
 import java.io.File
 
-class SketchwareProjectResourcesManager(private val file: File) {
+class ResourcesManager(private val file: File) {
     private var list: List<BlockDataModel>? = null
     private var decryptedString: String? = null
 

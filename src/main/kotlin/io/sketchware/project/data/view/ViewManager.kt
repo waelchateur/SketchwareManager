@@ -8,7 +8,7 @@ import io.sketchware.utils.*
 import io.sketchware.utils.replaceOrInsertAtTop
 import java.io.File
 
-class SketchwareProjectViewManager(private val file: File) {
+class ViewManager(private val file: File) {
     private var list: List<BlockDataModel>? = null
     private var decryptedString: String? = null
 

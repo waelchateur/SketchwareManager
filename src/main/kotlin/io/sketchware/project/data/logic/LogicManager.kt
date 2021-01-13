@@ -11,7 +11,7 @@ import io.sketchware.utils.toModel
 import io.sketchware.utils.writeFile
 import java.io.File
 
-open class SketchwareProjectLogicManager(private val file: File) {
+open class LogicManager(private val file: File) {
     private var list: List<BlockDataModel>? = null
     private var decryptedString: String? = null
 
