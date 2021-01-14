@@ -15,6 +15,7 @@ class SketchwareProjects : CoroutineScope {
     constructor(sketchcodeFolder: File) {
         manager = SketchwareProjects(sketchcodeFolder)
     }
+
     constructor(sketchcodeFolder: String) {
         manager = SketchwareProjects(sketchcodeFolder)
     }
@@ -25,6 +26,7 @@ class SketchwareProjects : CoroutineScope {
     fun interface ProjectsLoadedCallback {
         fun onLoad(projects: List<SketchwareProject>?)
     }
+
     fun getProjects(callback: ProjectsLoadedCallback) = launch {
         callback.onLoad(manager.getProjects())
     }

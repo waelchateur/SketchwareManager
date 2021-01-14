@@ -9,7 +9,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
 
-class SketchwareCollection(file: File, dataFolder: File = file.parentFile): CoroutineScope {
+class SketchwareCollection(file: File, dataFolder: File = file.parentFile) : CoroutineScope {
 
     private val manager = SketchwareCollection(file, dataFolder)
 

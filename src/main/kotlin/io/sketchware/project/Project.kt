@@ -14,12 +14,18 @@ import io.sketchware.project.data.view.ViewManager
 import io.sketchware.utils.*
 import java.io.File
 
-open class SketchwareProject (
+open class SketchwareProject(
     private val filesLocations: ProjectFilesLocations
 ) {
 
-    constructor(sketchwareFolder: File, projectId: Int): this(ProjectFilesLocations.defaultSketchwareProject(sketchwareFolder, projectId))
-    constructor(sketchwareFolderPath: String, projectId: Int): this(File(sketchwareFolderPath), projectId)
+    constructor(sketchwareFolder: File, projectId: Int) : this(
+        ProjectFilesLocations.defaultSketchwareProject(
+            sketchwareFolder,
+            projectId
+        )
+    )
+
+    constructor(sketchwareFolderPath: String, projectId: Int) : this(File(sketchwareFolderPath), projectId)
 
     /**
      * Deletes project and all files which connected with it.
@@ -109,11 +115,12 @@ open class SketchwareProject (
 
 open class SketchwareProProject(
     private val filesLocations: ProjectFilesLocations
-): SketchwareProject(filesLocations) {
+) : SketchwareProject(filesLocations) {
 
-    constructor(sketchwareFolder: File, projectId: Int):
+    constructor(sketchwareFolder: File, projectId: Int) :
             this(ProjectFilesLocations.defaultSketchwareProject(sketchwareFolder, projectId))
-    constructor(sketchwareFolderPath: String, projectId: Int):
+
+    constructor(sketchwareFolderPath: String, projectId: Int) :
             this(File(sketchwareFolderPath), projectId)
 
     private fun getData() = filesLocations.data as SketchwareProProjectDataFiles
@@ -125,7 +132,7 @@ open class SketchwareProProject(
     }
 
     suspend fun getProguardConfig(): ProguardConfig? {
-        return  String(
+        return String(
             getData().proguardConfigFile.readFile()
         ).serialize()
     }

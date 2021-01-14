@@ -2,7 +2,7 @@ package io.sketchware.models.sketchware
 
 import java.io.File
 
-data class ProjectFilesLocations (
+data class ProjectFilesLocations(
     val mysc: ProjectMyscFiles,
     val data: ProjectDataFiles,
     val backup: ProjectBackupFiles,
@@ -89,7 +89,7 @@ open class SketchwareProjectDataFiles(
     override var logicFile: File,
     override var resourceFile: File,
     override var viewFile: File
-): ProjectDataFiles(fileFile, libraryFile, logicFile, resourceFile, viewFile)
+) : ProjectDataFiles(fileFile, libraryFile, logicFile, resourceFile, viewFile)
 
 open class SketchwareProProjectDataFiles(
     override var fileFile: File,
@@ -99,7 +99,7 @@ open class SketchwareProProjectDataFiles(
     override var viewFile: File,
     var proguardRulesFile: File,
     var proguardConfigFile: File
-): ProjectDataFiles(fileFile, libraryFile, logicFile, resourceFile, viewFile)
+) : ProjectDataFiles(fileFile, libraryFile, logicFile, resourceFile, viewFile)
 
 open class ProjectBackupFiles(
     val logicFile: File,

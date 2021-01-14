@@ -1,6 +1,5 @@
 package io.sketchware.models.sketchware.data
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -10,14 +9,14 @@ data class SketchwareWidget(
 )
 
 @Serializable
-class SketchwareImage (
+class SketchwareImage(
     var rotate: Int = 0,
     var scaleType: String? = null,
     var resName: String? = null
 )
 
 @Serializable
-class SketchwareLayout (
+class SketchwareLayout(
     var backgroundColor: Int = 0,
     var borderColor: Int = 0,
     var gravity: Int = 0,
@@ -38,7 +37,7 @@ class SketchwareLayout (
 )
 
 @Serializable
-class SketchwareText (
+class SketchwareText(
     var hint: String? = null,
     var hintColor: Int = 0,
     var imeOption: Int = 0,

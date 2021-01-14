@@ -67,13 +67,13 @@ allprojects {
                 name = "bintray"
                 url = uri("https://api.bintray.com/maven/kotlingang/maven/$projectName/;publish=1;override=1")
 
-                val (bintrayUser, bintrayApiKey) = if(localProperties != null) {
+                val (bintrayUser, bintrayApiKey) = if (localProperties != null) {
                     localProperties.getProperty("bintrayUser") to localProperties.getProperty("bintrayApiKey")
                 } else {
                     null to null
                 }
 
-                if(bintrayUser == null || bintrayApiKey == null) {
+                if (bintrayUser == null || bintrayApiKey == null) {
                     System.err.println("Missing bintray authorization (bintrayUser, bintrayApiKey in local.properties)")
                 } else {
                     credentials {

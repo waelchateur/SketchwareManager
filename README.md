@@ -26,10 +26,14 @@ println(project.getProguardRules()) // prints proguard rules in project
 project.setProguardRules("..") // sets proguard rules
 // and another funcs..
 ```
+
 ### Managing project logic, view, etc.
-The library provides the ability to manage logic, layout, resources and other project information,
-but this isn't stable implementation, and the public API can change at any time.
+
+The library provides the ability to manage logic, layout, resources and other project information, but this isn't stable
+implementation, and the public API can change at any time.
+
 #### Example:
+
 ```kotlin
 val logicManager = project.logicManager
 val mainActivityEvents = logicManager.getEvents("MainActivity")
@@ -39,7 +43,9 @@ mainActivityEvents.forEach { event -> event.apply {
     }
 }
 ```
-More: [Data tutorials](https://github.com/y9neon/SketchwareManager/tree/master/tutorials/Receiving%20and%20managing%20project%20data%20(logic%2C%20view%2C%20resources%2C%20libraries)).
+
+More: [Data tutorials](https://github.com/y9neon/SketchwareManager/tree/master/tutorials/Receiving%20and%20managing%20project%20data%20(logic%2C%20view%2C%20resources%2C%20libraries))
+.
 
 ## Collections 📦
 

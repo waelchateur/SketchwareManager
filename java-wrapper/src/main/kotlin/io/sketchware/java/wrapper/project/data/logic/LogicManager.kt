@@ -13,7 +13,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
 
-class LogicManager(file: File): CoroutineScope {
+class LogicManager(file: File) : CoroutineScope {
     private val manager = LogicManager(file)
 
     fun interface OnEventsLoadedCallback {

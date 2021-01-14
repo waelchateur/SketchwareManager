@@ -1,19 +1,25 @@
 # Project Logic
-All projects (apart from new ones in which there is nothing) have a file that 
-stores data about the application logic.
+
+All projects (apart from new ones in which there is nothing) have a file that stores data about the application logic.
 By `logic` we mean variables, events, moreblocks and their contents.
 
 You can use the LogicManager that is predefined in SketchwareProject
+
 ```kotlin
 val project = SketchwareProjects(_folder_).getProjects()[0] // only for example
 project.logicManager // there is already defined logicManager
 ```
-or you can define the logic file manager: 
+
+or you can define the logic file manager:
+
 ```kotlin
 val logicManager = SketchwareProjectLogicManager(_logic_file_)
 ```
+
 Inside this class there are methods that control the logic of the project, let's consider events for example:
+
 #### Get events:
+
 ```kotlin
 val mainActivityEvents = logicManager.getEvents("MainActivity")
 mainActivityEvents.forEach { event -> event.apply {
@@ -22,7 +28,9 @@ mainActivityEvents.forEach { event -> event.apply {
     }
 }
 ```
+
 #### Manage events:
+
 ```kotlin
 val event = SketchwareEvent("event_name", _event_type_, /* ... and etc */)
 val eventBlocks = listOf<SketchwareProjectBlock>(

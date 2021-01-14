@@ -9,7 +9,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
 
-class ViewManager(file: File): CoroutineScope {
+class ViewManager(file: File) : CoroutineScope {
     private val manager = ViewManager(file)
 
     fun interface OnViewLoadedCallback {

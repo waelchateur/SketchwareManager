@@ -8,7 +8,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
 
-class ResourcesManager(file: File): CoroutineScope {
+class ResourcesManager(file: File) : CoroutineScope {
     private val manager = ResourcesManager(file)
 
     fun interface OnResourcesLoadedCallback {

@@ -18,7 +18,7 @@ class SketchwareProjects(private val sketchwareFolder: File) {
 
     suspend fun getProjects(): List<SketchwareProject>? {
         return File(sketchwareFolder, "mysc/list").getListFiles()?.map {
-            if(isSketchwareProProject(it.name.toInt()))
+            if (isSketchwareProProject(it.name.toInt()))
                 SketchwareProject(ProjectFilesLocations.defaultSketchwareProject(sketchwareFolder, it.name.toInt()))
             else SketchwareProProject(
                 ProjectFilesLocations.defaultSketchwareProProject(sketchwareFolder, it.name.toInt())

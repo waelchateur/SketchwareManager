@@ -5,7 +5,6 @@ import io.sketchware.models.exceptions.SketchwareFileError
 import io.sketchware.models.sketchware.data.BlockDataModel
 import io.sketchware.models.sketchware.data.SketchwareDataFile
 import io.sketchware.utils.*
-import io.sketchware.utils.replaceOrInsertAtTop
 import java.io.File
 
 class FileManager(private val file: File) {

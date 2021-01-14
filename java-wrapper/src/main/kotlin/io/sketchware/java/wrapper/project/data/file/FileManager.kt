@@ -9,7 +9,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
 
-class FileManager(private val file: File): CoroutineScope {
+class FileManager(private val file: File) : CoroutineScope {
     private val manager = FileManager(file)
 
     fun interface onSketchwareDataFileLoadedCallback {

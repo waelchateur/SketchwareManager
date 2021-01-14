@@ -2,10 +2,11 @@ package io.sketchware.project.data.logic
 
 import io.sketchware.encryptor.FileEncryptor
 import io.sketchware.models.sketchware.SketchwareBlock
-import io.sketchware.models.sketchware.data.*
+import io.sketchware.models.sketchware.data.SketchwareComponent
+import io.sketchware.models.sketchware.data.SketchwareEvent
+import io.sketchware.models.sketchware.data.SketchwareMoreblock
+import io.sketchware.models.sketchware.data.SketchwareVariable
 import io.sketchware.utils.*
-import io.sketchware.utils.replaceOrInsertAtTop
-import io.sketchware.utils.writeFile
 import java.io.File
 
 open class LogicManager(private val file: File) {
@@ -21,7 +22,7 @@ open class LogicManager(private val file: File) {
         val result = "(?<=@)(${name.replace(".", "\\.")})(.*?)(?=\\n@|$)"
             .toRegex()
             .find(getDecryptedString())
-        return if(result?.groups?.get(2) == null)
+        return if (result?.groups?.get(2) == null)
             null
         else BlockParser.parseAsArray(result.groups[2]!!.value)
     }
@@ -29,7 +30,7 @@ open class LogicManager(private val file: File) {
     private suspend fun getTextBlock(name: String): List<Pair<String, String>>? {
         val result = "(?<=@)($name)(.*?)(?=\\n@|$)".toRegex()
             .find(getDecryptedString())
-        if(result?.groups?.get(2) == null)
+        if (result?.groups?.get(2) == null)
             return null
         return SketchwareDataParser.parseTextBlocks(result.groups[2]!!.value).map {
             Pair(it[0], it[1])
@@ -63,6 +64,7 @@ open class LogicManager(private val file: File) {
         getTextBlock("$activity.java_func")?.map { (name, data) ->
             SketchwareMoreblock(name, data)
         }
+
     /**
      * Get components in specific activity.
      * @param activity activity name (Example: MainActivity)

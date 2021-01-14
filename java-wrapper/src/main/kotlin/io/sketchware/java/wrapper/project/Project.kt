@@ -4,7 +4,10 @@ import io.sketchware.java.wrapper.common.OnActionFinishedCallback
 import io.sketchware.models.sketchware.ProjectConfig
 import io.sketchware.models.sketchware.ProjectFilesLocations
 import io.sketchware.project.SketchwareProject
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 open class SketchwareProject(filesLocations: ProjectFilesLocations) : CoroutineScope {
     private val manager = SketchwareProject(filesLocations)

@@ -5,7 +5,6 @@ import io.sketchware.models.exceptions.SketchwareFileError
 import io.sketchware.models.sketchware.data.BlockDataModel
 import io.sketchware.models.sketchware.data.SketchwareWidget
 import io.sketchware.utils.*
-import io.sketchware.utils.replaceOrInsertAtTop
 import java.io.File
 
 class ViewManager(private val file: File) {
@@ -37,7 +36,7 @@ class ViewManager(private val file: File) {
     suspend fun getView(viewName: String, widget: String? = null): List<SketchwareWidget> {
         return getList().filter {
             it.name == "$viewName.xml".plus(
-                if(widget == null)
+                if (widget == null)
                     "" else "_$widget"
             )
         }.map { (name, values) ->
@@ -66,7 +65,7 @@ class ViewManager(private val file: File) {
         list: List<SketchwareWidget>
     ) {
         val name = "$viewName.xml".plus(
-            if(widget == null)
+            if (widget == null)
                 "" else "_$widget"
         )
         decryptedString = getDecryptedString().replaceOrInsertAtTop(

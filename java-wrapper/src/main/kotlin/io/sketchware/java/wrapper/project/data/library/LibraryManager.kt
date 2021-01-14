@@ -9,7 +9,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
 
-class LibraryManager(file: File): CoroutineScope {
+class LibraryManager(file: File) : CoroutineScope {
     private val manager = LibraryManager(file)
 
     fun interface OnLibrariesLoadedCallback {
