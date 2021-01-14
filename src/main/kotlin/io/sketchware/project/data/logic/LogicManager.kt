@@ -1,13 +1,10 @@
 package io.sketchware.project.data.logic
 
 import io.sketchware.encryptor.FileEncryptor
-import io.sketchware.utils.BlockParser
-import io.sketchware.utils.SketchwareDataParser
-import io.sketchware.models.sketchware.SketchwareProjectBlock
+import io.sketchware.models.sketchware.SketchwareBlock
 import io.sketchware.models.sketchware.data.*
-import io.sketchware.utils.readFile
+import io.sketchware.utils.*
 import io.sketchware.utils.replaceOrInsertAtTop
-import io.sketchware.utils.toModel
 import io.sketchware.utils.writeFile
 import java.io.File
 
@@ -15,95 +12,97 @@ open class LogicManager(private val file: File) {
     private var list: List<BlockDataModel>? = null
     private var decryptedString: String? = null
 
-    private suspend fun getList(): List<BlockDataModel> {
-        if (list == null)
-            list = SketchwareDataParser.parseJsonBlocks(getDecryptedString())
-        return list ?: throw error("list shouldn't be null")
-    }
-
     private suspend fun getDecryptedString(): String {
         if (decryptedString == null)
             decryptedString = String(FileEncryptor.decrypt(file.readFile()))
         return decryptedString ?: throw error("list shouldn't be null")
     }
 
+    private suspend inline fun <reified T> getBlock(name: String): List<T>? {
+        val result = "(?<=@)(${name.replace(".", "\\.")})(.*?)(?=\\n@|$)"
+            .toRegex()
+            .find(getDecryptedString())
+        return if(result?.groups?.get(2) == null)
+            null
+        else BlockParser.parseAsArray(result.groups[2]!!.value)
+    }
+
+    private suspend fun getTextBlock(name: String): List<Pair<String, String>>? {
+        val result = "(?<=@)($name)(.*?)(?=\\n@|$)".toRegex()
+            .find(getDecryptedString())
+        if(result?.groups?.get(2) == null)
+            return null
+        return SketchwareDataParser.parseTextBlocks(result.groups[2]!!.value).map {
+            Pair(it[0], it[1])
+        }
+    }
+
+    private suspend inline fun <reified T> saveBlock(name: String, list: List<T>) =
+        saveBlock(name, BlockParser.toSaveableValue(list))
+
+    private suspend fun saveBlock(name: String, stringToSave: String) {
+        decryptedString = getDecryptedString().replaceOrInsertAtTop(
+            "(@${name.replace(".", "\\.")}.*?)(?=@|\$)".toRegex(),
+            "@$name$stringToSave\n\n"
+        )
+        file.writeFile(FileEncryptor.encrypt(getDecryptedString().toByteArray()))
+        this.list = null
+        decryptedString = null
+    }
+
     /**
      * Get activity events
      * @param activity activity name (Example: MainActivity)
      */
-    suspend fun getEvents(activity: String): List<SketchwareEvent>? {
-        return getList().find {
-            it.name == "$activity.java_events"
-        }?.values?.map { it.toModel() }
-    }
+    suspend fun getEvents(activity: String) =
+        getBlock<SketchwareEvent>("$activity.java_events")
 
     /**
      * Get activity moreblocks
      * @param activity activity name (Example: MainActivity)
      */
-    suspend fun getMoreblocks(activity: String): List<SketchwareProjectMoreblock>? {
-        val regex = Regex("(?:@$activity\\.java_func(.*?))(?=@|\$)", RegexOption.DOT_MATCHES_ALL)
-        return regex.find(getDecryptedString())?.groupValues?.get(1)?.let {
-            SketchwareDataParser.parseTextBlocks(
-                it
-            )
-        }?.map { (first, second) -> SketchwareProjectMoreblock(first, second) }
-    }
-
+    suspend fun getMoreblocks(activity: String) =
+        getTextBlock("$activity.java_func")?.map { (name, data) ->
+            SketchwareProjectMoreblock(name, data)
+        }
     /**
      * Get components in specific activity.
      * @param activity activity name (Example: MainActivity)
      * @return List of SketchwareComponent.
      */
-    suspend fun getComponents(activity: String): List<SketchwareComponent>? {
-        return getList().find {
-            it.name == "$activity.java_components"
-        }?.values?.map { it.toModel() }
-    }
+    suspend fun getComponents(activity: String): List<SketchwareComponent>? =
+        getBlock("$activity.java_components")
 
     /**
      * Get variables in specific activity.
      * @param activity Activity name (example: MainActivity)
      */
-    suspend fun getVariables(activity: String): List<SketchwareVariable>? {
-        return Regex("(?:@$activity\\.java_var(.*?))(?=@|\$)", RegexOption.DOT_MATCHES_ALL)
-            .find(getDecryptedString())
-            ?.groupValues
-            ?.get(1)
-            ?.let { SketchwareDataParser.parseTextBlocks(it) }
-            ?.map { (type, name) -> SketchwareVariable(name, type.toInt()) }
-    }
+    suspend fun getVariables(activity: String) =
+        getTextBlock("$activity.java_var")?.map { (name, type) ->
+            SketchwareVariable(name, type.toInt())
+        }
 
     /**
      * Get logic of moreblock.
      * @return blocks in moreblock.
      */
-    suspend fun getMoreblockLogic(activity: String, name: String): List<SketchwareProjectBlock>? {
-        return getList().find {
-            it.name == "$activity.java_${name}_moreBlock"
-        }?.values?.map { it.toModel() }
-    }
+    suspend fun getMoreblockLogic(activity: String, name: String): List<SketchwareBlock>? =
+        getBlock("$activity.java_${name}_moreBlock")
 
     /**
      * Get logic of event.
      * @return blocks in event.
      */
-    suspend fun getEventLogic(activity: String, targetId: String, eventName: String): List<SketchwareProjectBlock>? {
-        return getList().find {
-            it.name == "$activity.java_${targetId}_$eventName"
-        }?.values?.map { it.toModel() }
-    }
+    suspend fun getEventLogic(activity: String, targetId: String, eventName: String) =
+        getBlock<SketchwareBlock>("$activity.java_${targetId}_$eventName")
 
     /**
      * Get blocks in onCreate. Sketchware doesn't mark it as event (wtf xdd),
      * that's why there is additional method.
      * @return blocks in onCreate
      */
-    suspend fun getOnCreateLogic(activity: String): List<SketchwareProjectBlock>? {
-        return getList().find {
-            it.name == "$activity.java_onCreate_initializeLogic"
-        }?.values?.map { it.toModel() }
-    }
+    suspend fun getOnCreateLogic(activity: String) =
+        getBlock<SketchwareBlock>("$activity.java_onCreate_initializeLogic")
 
     /**
      * Edit onCreate event.
@@ -111,7 +110,7 @@ open class LogicManager(private val file: File) {
      */
     suspend fun editOnCreateLogic(
         activity: String,
-        builder: ArrayList<SketchwareProjectBlock>.() -> Unit
+        builder: ArrayList<SketchwareBlock>.() -> Unit
     ) = editLogic(activity, "onCreate_initializeLogic", builder)
 
     /**
@@ -137,15 +136,8 @@ open class LogicManager(private val file: File) {
      * @param activity Activity Name (example: MainActivity)
      * @param list list of events
      */
-    private suspend fun saveEvents(activity: String, list: List<SketchwareEvent>) {
-        decryptedString = getDecryptedString().replaceOrInsertAtTop(
-            "(@$activity\\.java_events.*?)(?=@|\$)".toRegex(),
-            "@$activity.java_events${BlockParser.toSaveableValue(list)}\n\n"
-        )
-        file.writeFile(FileEncryptor.encrypt(getDecryptedString().toByteArray()))
-        this.list = null
-        decryptedString = null
-    }
+    private suspend fun saveEvents(activity: String, list: List<SketchwareEvent>) =
+        saveBlock("$activity.java_events", list)
 
     /**
      * Edit logic of some event.
@@ -157,7 +149,7 @@ open class LogicManager(private val file: File) {
         activity: String,
         eventName: String,
         targetId: String,
-        builder: ArrayList<SketchwareProjectBlock>.() -> Unit
+        builder: ArrayList<SketchwareBlock>.() -> Unit
     ) = editLogic(activity, "${targetId}_$eventName", builder)
 
     /**
@@ -165,7 +157,7 @@ open class LogicManager(private val file: File) {
      * @param activity Activity name (example: MainActivity)
      * @param event Sketchware Event, be careful with adding
      */
-    suspend fun addEvent(activity: String, event: SketchwareEvent, blocks: List<SketchwareProjectBlock>) {
+    suspend fun addEvent(activity: String, event: SketchwareEvent, blocks: List<SketchwareBlock>) {
         val array = ArrayList(getEvents(activity) ?: ArrayList())
         array.add(event)
         saveEvents(activity, array)
@@ -177,15 +169,8 @@ open class LogicManager(private val file: File) {
      * @param activity Activity name (example: MainActivity)
      * @param list list of components to save
      */
-    private suspend fun saveComponents(activity: String, list: List<SketchwareComponent>) {
-        decryptedString = getDecryptedString().replaceOrInsertAtTop(
-            "(@$activity\\.java_components.*?)(?=@|\$)".toRegex(),
-            "@$activity.java_components${BlockParser.toSaveableValue(list)}\n"
-        )
-        file.writeFile(FileEncryptor.encrypt(getDecryptedString().toByteArray()))
-        this.list = null
-        decryptedString = null
-    }
+    private suspend fun saveComponents(activity: String, list: List<SketchwareComponent>) =
+        saveBlock("$activity.java_components", list)
 
     /**
      * Removes component by component id.
@@ -216,25 +201,11 @@ open class LogicManager(private val file: File) {
      * @param activity Activity name (example: MainActivity)
      * @param list list of variables
      */
-    private suspend fun saveVariables(activity: String, list: List<SketchwareVariable>) {
-        decryptedString = getDecryptedString().replaceOrInsertAtTop(
-            "(@$activity\\.java_var.*?)(?=@|\$)".toRegex(),
-            "@$activity.java_var${list.joinToString("\n")}\n"
-        )
-        file.writeFile(FileEncryptor.encrypt(getDecryptedString().toByteArray()))
-        this.list = null
-        decryptedString = null
-    }
+    private suspend fun saveVariables(activity: String, list: List<SketchwareVariable>) =
+        saveBlock("$activity.java_var", list.joinToString("\n") { "${it.name}:${it.type}" })
 
-    private suspend fun saveMoreblocks(activity: String, list: List<SketchwareProjectMoreblock>) {
-        decryptedString = getDecryptedString().replaceOrInsertAtTop(
-            "(@$activity\\.java_func.*?)(?=@|\$)".toRegex(),
-            "@$activity.java_func${list.joinToString("\n")}\n"
-        )
-        file.writeFile(FileEncryptor.encrypt(getDecryptedString().toByteArray()))
-        this.list = null
-        this.decryptedString = null
-    }
+    private suspend fun saveMoreblocks(activity: String, list: List<SketchwareProjectMoreblock>) =
+        saveBlock("$activity.java_func", list.joinToString("\n") { "${it.name}:${it.data}" })
 
     /**
      * Add variable to specific activity.
@@ -267,7 +238,7 @@ open class LogicManager(private val file: File) {
     suspend fun addMoreblock(
         activity: String,
         moreblock: SketchwareProjectMoreblock,
-        contentBlocks: List<SketchwareProjectBlock>
+        contentBlocks: List<SketchwareBlock>
     ) {
         val moreblocks = ArrayList(getMoreblocks(activity) ?: ArrayList())
         moreblocks.add(moreblock)
@@ -275,14 +246,14 @@ open class LogicManager(private val file: File) {
         saveMoreblockLogic(activity, moreblock.name, contentBlocks)
     }
 
-    private suspend fun saveMoreblockLogic(activity: String, name: String, list: List<SketchwareProjectBlock>) =
+    private suspend fun saveMoreblockLogic(activity: String, name: String, list: List<SketchwareBlock>) =
         saveLogic(activity, "$activity.java_${name}_moreBlock", list)
 
     private suspend fun saveEventLogic(
         activity: String,
         eventName: String,
         targetId: String,
-        list: List<SketchwareProjectBlock>
+        list: List<SketchwareBlock>
     ) = saveLogic(activity, "${targetId}_$eventName", list)
 
     /**
@@ -296,27 +267,16 @@ open class LogicManager(private val file: File) {
         return moreblocks.remove(moreblock).also { if (it) saveMoreblocks(activity, moreblocks) }
     }
 
-    private suspend fun saveLogic(activity: String, name: String, list: List<SketchwareProjectBlock>) {
-        decryptedString = getDecryptedString().replaceOrInsertAtTop(
-            "(@$activity\\.java_$name.*?)(?=@|\$)".toRegex(),
-            if (list.isEmpty())
-                ""
-            else "@$activity.java_$name${BlockParser.toSaveableValue(list)}\n\n"
-        )
-        file.writeFile(FileEncryptor.encrypt(getDecryptedString().toByteArray()))
-        this.list = null
-        decryptedString = null
-    }
+    private suspend fun saveLogic(activity: String, name: String, list: List<SketchwareBlock>) =
+        saveBlock("$activity.java_$name", list)
 
     private suspend fun editLogic(
         activity: String,
         name: String,
-        builder: ArrayList<SketchwareProjectBlock>.() -> Unit
+        builder: ArrayList<SketchwareBlock>.() -> Unit
     ) {
-        val list = ArrayList(
-            getList().find {
-                it.name == "$activity.java_$name"
-            }?.values?.map { it.toModel<SketchwareProjectBlock>() }!!
+        val list = ArrayList<SketchwareBlock>(
+            getBlock("$activity.java_$name") ?: ArrayList()
         )
         saveLogic(activity, name, list.apply(builder))
     }
@@ -329,7 +289,7 @@ open class LogicManager(private val file: File) {
     suspend fun editMoreblockLogic(
         activity: String,
         name: String,
-        builder: ArrayList<SketchwareProjectBlock>.() -> Unit
+        builder: ArrayList<SketchwareBlock>.() -> Unit
     ) = editLogic(activity, "${name}_moreBlock", builder)
 
     private suspend fun removeLogic(activity: String, name: String) {
