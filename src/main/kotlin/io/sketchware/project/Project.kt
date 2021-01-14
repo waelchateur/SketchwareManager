@@ -40,7 +40,7 @@ open class SketchwareProject(
 
     open suspend fun getConfig(): ProjectConfig {
         return String(
-            FileEncryptor.decrypt(filesLocations.mysc.configFile.readBytes())
+            FileEncryptor.decrypt(filesLocations.mysc.configFile.readFile())
         ).serialize()
     }
 

@@ -7,9 +7,6 @@ plugins {
     `maven-publish`
 }
 
-group = "io.sketchware"
-version = "alpha-2.2.3"
-
 allprojects {
     repositories {
         mavenCentral()
@@ -39,6 +36,9 @@ val localProperties = project.rootProject.file("local.properties")
     ?.let(::loadProperties)
 
 allprojects {
+    group = "io.sketchware"
+    version = "alpha-2.2.4"
+
     apply(plugin = "maven-publish")
 
     publishing {
