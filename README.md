@@ -60,6 +60,9 @@ println(collectionManager.moreblocks.getCollection()) // prints all moreblocks
 More: [Collections tutorial](https://github.com/y9neon/SketchwareManager/tree/master/tutorials/Collections).
 
 ## Implementation
+The current versions are not stable. The public API can be changed at any minute. Also, not everything has been tested 100%.
+
+Do not use this version in production.
 
 #### build.gradle:
 
@@ -80,5 +83,14 @@ repositories {
 }
 dependencies {
     implementation("io.sketchware:Sketchware-Manager:alpha-2.2.4")
+}
+
+```
+
+#### Java implementation
+To use the library in Java, you need to add an additional dependency:
+```groovy
+dependencies {
+    implementation 'io.sketchware:java-wrapper:alpha-2.2.4'
 }
 ```
