@@ -5,7 +5,6 @@ import io.sketchware.models.exceptions.SketchwareFileError
 import io.sketchware.models.sketchware.data.BlockDataModel
 import io.sketchware.models.sketchware.data.SketchwareLibrary
 import io.sketchware.utils.*
-import io.sketchware.utils.replaceOrInsertAtTop
 import java.io.File
 
 class LibraryManager(private val file: File) {
@@ -43,13 +42,20 @@ class LibraryManager(private val file: File) {
      * @param name Name of the library
      */
     suspend fun editLibrary(name: String, builder: SketchwareLibrary.() -> Unit) {
-        val libraries = getLibraries().toMutableList()
-        val library = libraries.find { it.name == name }
+        val lib = getLibraries().find { it.name == name }
             ?: throw NoSuchElementException("No library with name $name.")
-        val newLibrary = library.copy().apply(builder)
+        editLibrary(lib, lib.apply(builder))
+    }
 
-        val index = libraries.indexOf(library)
-        libraries[index] = newLibrary
+    suspend fun editLibrary(currentLib: SketchwareLibrary, builder: SketchwareLibrary.() -> Unit) {
+        editLibrary(currentLib, currentLib.apply(builder))
+    }
+
+    suspend fun editLibrary(currentLib: SketchwareLibrary, newLib: SketchwareLibrary) {
+        val libraries = getLibraries().toMutableList()
+
+        val index = libraries.indexOf(currentLib)
+        libraries[index] = newLib
 
         saveLibraries(libraries)
     }

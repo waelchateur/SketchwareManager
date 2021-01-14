@@ -9,7 +9,6 @@ import io.sketchware.utils.writeFile
 import java.io.File
 
 open class LogicManager(private val file: File) {
-    private var list: List<BlockDataModel>? = null
     private var decryptedString: String? = null
 
     private suspend fun getDecryptedString(): String {
@@ -46,7 +45,6 @@ open class LogicManager(private val file: File) {
             "@$name$stringToSave\n\n"
         )
         file.writeFile(FileEncryptor.encrypt(getDecryptedString().toByteArray()))
-        this.list = null
         decryptedString = null
     }
 
@@ -63,7 +61,7 @@ open class LogicManager(private val file: File) {
      */
     suspend fun getMoreblocks(activity: String) =
         getTextBlock("$activity.java_func")?.map { (name, data) ->
-            SketchwareProjectMoreblock(name, data)
+            SketchwareMoreblock(name, data)
         }
     /**
      * Get components in specific activity.
@@ -113,6 +111,11 @@ open class LogicManager(private val file: File) {
         builder: ArrayList<SketchwareBlock>.() -> Unit
     ) = editLogic(activity, "onCreate_initializeLogic", builder)
 
+    suspend fun editOnCreateLogic(
+        activity: String,
+        list: List<SketchwareBlock>
+    ) = saveLogic(activity, "onCreate_initializeLogic", list)
+
     /**
      * Removes event by event name and target id.
      * @param activity Activity Name (example: MainActivity)
@@ -151,6 +154,13 @@ open class LogicManager(private val file: File) {
         targetId: String,
         builder: ArrayList<SketchwareBlock>.() -> Unit
     ) = editLogic(activity, "${targetId}_$eventName", builder)
+
+    suspend fun editEventLogic(
+        activity: String,
+        eventName: String,
+        targetId: String,
+        list: List<SketchwareBlock>
+    ) = saveLogic(activity, "${targetId}_$eventName", list)
 
     /**
      * Add event to project activity.
@@ -204,7 +214,7 @@ open class LogicManager(private val file: File) {
     private suspend fun saveVariables(activity: String, list: List<SketchwareVariable>) =
         saveBlock("$activity.java_var", list.joinToString("\n") { "${it.name}:${it.type}" })
 
-    private suspend fun saveMoreblocks(activity: String, list: List<SketchwareProjectMoreblock>) =
+    private suspend fun saveMoreblocks(activity: String, list: List<SketchwareMoreblock>) =
         saveBlock("$activity.java_func", list.joinToString("\n") { "${it.name}:${it.data}" })
 
     /**
@@ -237,7 +247,7 @@ open class LogicManager(private val file: File) {
      */
     suspend fun addMoreblock(
         activity: String,
-        moreblock: SketchwareProjectMoreblock,
+        moreblock: SketchwareMoreblock,
         contentBlocks: List<SketchwareBlock>
     ) {
         val moreblocks = ArrayList(getMoreblocks(activity) ?: ArrayList())
@@ -261,12 +271,15 @@ open class LogicManager(private val file: File) {
      * @param activity Activity Name (example: MainActivity)
      * @param moreblock moreblock model with data about moreblock.
      */
-    suspend fun removeMoreblock(activity: String, moreblock: SketchwareProjectMoreblock): Boolean {
+    suspend fun removeMoreblock(activity: String, moreblock: SketchwareMoreblock): Boolean {
         val moreblocks = ArrayList(getMoreblocks(activity) ?: return false)
         removeLogic(activity, "${moreblock.name}_moreBlock")
         return moreblocks.remove(moreblock).also { if (it) saveMoreblocks(activity, moreblocks) }
     }
 
+    /**
+     * Saves logic for an event / moreblock.
+     */
     private suspend fun saveLogic(activity: String, name: String, list: List<SketchwareBlock>) =
         saveBlock("$activity.java_$name", list)
 
@@ -291,6 +304,12 @@ open class LogicManager(private val file: File) {
         name: String,
         builder: ArrayList<SketchwareBlock>.() -> Unit
     ) = editLogic(activity, "${name}_moreBlock", builder)
+
+    suspend fun editMoreblockLogic(
+        activity: String,
+        name: String,
+        newLogic: List<SketchwareBlock>
+    ) = saveLogic(activity, "${name}_moreBlock", newLogic)
 
     private suspend fun removeLogic(activity: String, name: String) {
         decryptedString = Regex(

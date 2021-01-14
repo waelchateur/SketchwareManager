@@ -6,11 +6,11 @@ import io.sketchware.models.sketchware.ProjectDestination
 import io.sketchware.models.sketchware.ProjectFilesLocations
 import io.sketchware.models.sketchware.SketchwareProProjectDataFiles
 import io.sketchware.models.sketchwarepro.ProguardConfig
-import io.sketchware.project.data.file.SketchwareProjectFileManager
-import io.sketchware.project.data.library.SketchwareProjectLibraryManager
-import io.sketchware.project.data.logic.SketchwareProjectLogicManager
-import io.sketchware.project.data.resource.SketchwareProjectResourcesManager
-import io.sketchware.project.data.view.SketchwareProjectViewManager
+import io.sketchware.project.data.file.FileManager
+import io.sketchware.project.data.library.LibraryManager
+import io.sketchware.project.data.logic.LogicManager
+import io.sketchware.project.data.resource.ResourcesManager
+import io.sketchware.project.data.view.ViewManager
 import io.sketchware.utils.*
 import java.io.File
 
@@ -38,49 +38,49 @@ open class SketchwareProject (
         ).serialize()
     }
 
-    open suspend fun editConfig(builder: ProjectConfig.() -> Unit) {
-        val currentConfig = getConfig()
-        val newConfig = currentConfig.apply(builder)
+    open suspend fun editConfig(builder: ProjectConfig.() -> Unit) = editConfig(getConfig().apply(builder))
+
+    open suspend fun editConfig(config: ProjectConfig) {
         filesLocations.mysc.configFile.writeFile(
-            FileEncryptor.encrypt(newConfig.toJson().toByteArray())
+            FileEncryptor.encrypt(config.toJson().toByteArray())
         )
     }
 
     /**
-     * Automatically based on [filesLocations] variable is determined by [SketchwareProjectLogicManager].
+     * Automatically based on [filesLocations] variable is determined by [LogicManager].
      * Responsible for the custom views, activity views.
-     * @return [SketchwareProjectFileManager] based on [filesLocations] variable paths.
+     * @return [FileManager] based on [filesLocations] variable paths.
      */
-    open val fileManager by lazy { SketchwareProjectFileManager(filesLocations.data.fileFile) }
+    open val fileManager by lazy { FileManager(filesLocations.data.fileFile) }
 
     /**
-     * Automatically based on [filesLocations] variable is determined by [SketchwareProjectLibraryManager].
+     * Automatically based on [filesLocations] variable is determined by [LibraryManager].
      * Responsible for the included libraries in the project.
-     * @return [SketchwareProjectLibraryManager] based on [filesLocations] variable paths.
+     * @return [LibraryManager] based on [filesLocations] variable paths.
      */
-    open val libraryManager by lazy { SketchwareProjectLibraryManager(filesLocations.data.libraryFile) }
+    open val libraryManager by lazy { LibraryManager(filesLocations.data.libraryFile) }
 
     /**
-     * Automatically based on [filesLocations] variable is determined by [SketchwareProjectLibraryManager].
+     * Automatically based on [filesLocations] variable is determined by [LibraryManager].
      * Responsible for the logic of the project (events, moreblocks, etc.).
-     * @return [SketchwareProjectLogicManager] based on [filesLocations] variable paths.
+     * @return [LogicManager] based on [filesLocations] variable paths.
      */
-    open val logicManager by lazy { SketchwareProjectLogicManager(filesLocations.data.logicFile) }
+    open val logicManager by lazy { LogicManager(filesLocations.data.logicFile) }
 
     /**
-     * Automatically based on [filesLocations] variable is determined by [SketchwareProjectResourcesManager].
+     * Automatically based on [filesLocations] variable is determined by [ResourcesManager].
      * Responsible for the resources of the project (fonts, images, sounds)
-     * @return [SketchwareProjectResourcesManager] based on [filesLocations] variable paths.
+     * @return [ResourcesManager] based on [filesLocations] variable paths.
      */
-    open val resourcesManager by lazy { SketchwareProjectResourcesManager(filesLocations.data.resourceFile) }
+    open val resourcesManager by lazy { ResourcesManager(filesLocations.data.resourceFile) }
 
 
     /**
-     * Automatically based on [filesLocations] variable is determined by [SketchwareProjectResourcesManager].
+     * Automatically based on [filesLocations] variable is determined by [ResourcesManager].
      * Responsible for the views content (xml).
-     * @return [SketchwareProjectResourcesManager] based on [filesLocations] variable paths.
+     * @return [ResourcesManager] based on [filesLocations] variable paths.
      */
-    open val viewManager by lazy { SketchwareProjectViewManager(filesLocations.data.viewFile) }
+    open val viewManager by lazy { ViewManager(filesLocations.data.viewFile) }
 
     /**
      * Clones a project with a minimal set of files (excludes backup and build files in mysc folder).
@@ -100,6 +100,9 @@ open class SketchwareProject (
         resources.images.copyFolder(destination.projectResources.images)
         resources.fonts.copyFolder(destination.projectResources.fonts)
         resources.icons.copyFolder(destination.projectResources.icons)
+    }
+
+    open suspend fun export(zipDestination: File) {
     }
 
 }

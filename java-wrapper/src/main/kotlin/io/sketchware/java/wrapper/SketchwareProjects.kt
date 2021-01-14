@@ -1,5 +1,6 @@
-package io.sketchware
+package io.sketchware.java.wrapper
 
+import io.sketchware.SketchwareProjects
 import io.sketchware.project.SketchwareProject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -7,12 +8,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
 
+class SketchwareProjects : CoroutineScope {
 
-class JavaSketchwareProjects : CoroutineScope {
-
-    /** May be used for non-suspend functions i.e. [SketchwareProjects.nextFreeId] */
-    @Suppress("MemberVisibilityCanBePrivate")
-    val manager: SketchwareProjects
+    private val manager: SketchwareProjects
 
     constructor(sketchcodeFolder: File) {
         manager = SketchwareProjects(sketchcodeFolder)
@@ -20,6 +18,9 @@ class JavaSketchwareProjects : CoroutineScope {
     constructor(sketchcodeFolder: String) {
         manager = SketchwareProjects(sketchcodeFolder)
     }
+
+    fun getNextFreeId() = manager.nextFreeId
+    fun isSketchwareProProject(id: Int) = manager.isSketchwareProProject(id)
 
     fun interface ProjectsLoadedCallback {
         fun onLoad(projects: List<SketchwareProject>?)

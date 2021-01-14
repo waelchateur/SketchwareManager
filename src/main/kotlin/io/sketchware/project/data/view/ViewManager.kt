@@ -54,6 +54,12 @@ class ViewManager(private val file: File) {
         builder: ArrayList<SketchwareWidget>.() -> Unit
     ) = saveView(viewName, widget, ArrayList(getView(viewName, widget)).apply(builder))
 
+    suspend fun editView(
+        viewName: String,
+        widget: String? = null,
+        widgets: List<SketchwareWidget>
+    ) = saveView(viewName, widget, widgets)
+
     private suspend fun saveView(
         viewName: String,
         widget: String? = null,

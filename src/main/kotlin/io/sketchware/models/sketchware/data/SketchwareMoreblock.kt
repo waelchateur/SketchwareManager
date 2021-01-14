@@ -3,7 +3,7 @@ package io.sketchware.models.sketchware.data
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SketchwareProjectMoreblock(
+data class SketchwareMoreblock(
     val name: String,
     val data: String
 ) {

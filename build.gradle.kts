@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "io.sketchware"
-version = "alpha-2.2.2"
+version = "alpha-2.2.3"
 
 allprojects {
     repositories {
