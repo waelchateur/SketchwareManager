@@ -5,7 +5,7 @@ Since the library was originally focused on Kotlin and used suspend functions
 
 ```groovy
 dependencies {
-    implementation 'io.sketchware:java-wrapper:alpha-2.2.5'
+    implementation 'io.sketchware:java-wrapper:alpha-2.2.6'
 }
 ```
 

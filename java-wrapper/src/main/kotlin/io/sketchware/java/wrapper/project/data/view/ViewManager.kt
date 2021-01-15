@@ -2,6 +2,7 @@ package io.sketchware.java.wrapper.project.data.view
 
 import io.sketchware.java.wrapper.common.OnActionFinishedCallback
 import io.sketchware.models.sketchware.data.SketchwareWidget
+import io.sketchware.models.sketchware.data.SketchwareWidgetRoot
 import io.sketchware.project.data.view.ViewManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -13,7 +14,7 @@ class ViewManager(file: File) : CoroutineScope {
     private val manager = ViewManager(file)
 
     fun interface OnViewLoadedCallback {
-        fun onLoad(widgets: List<SketchwareWidget>?)
+        fun onLoad(widgets: List<SketchwareWidgetRoot>?)
     }
 
     fun getView(
@@ -27,7 +28,7 @@ class ViewManager(file: File) : CoroutineScope {
     fun editView(
         viewName: String,
         widget: String? = null,
-        widgets: List<SketchwareWidget>,
+        widgets: List<SketchwareWidgetRoot>,
         callback: OnActionFinishedCallback? = null
     ) = launch {
         manager.editView(viewName, widget, widgets)
