@@ -14,7 +14,7 @@ project.viewManager // there is already defined viewManager
 or you can define the logic file manager:
 
 ```kotlin
-val viewManager = SketchwareProjectViewManager(_view_file_)
+val viewManager = ViewManager(_view_file_)
 ```
 
 Let's get view:

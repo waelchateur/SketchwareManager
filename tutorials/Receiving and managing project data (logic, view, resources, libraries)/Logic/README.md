@@ -13,7 +13,7 @@ project.logicManager // there is already defined logicManager
 or you can define the logic file manager:
 
 ```kotlin
-val logicManager = SketchwareProjectLogicManager(_logic_file_)
+val logicManager = LogicManager(_logic_file_)
 ```
 
 Inside this class there are methods that control the logic of the project, let's consider events for example:
