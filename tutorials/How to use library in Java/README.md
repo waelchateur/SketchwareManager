@@ -12,6 +12,16 @@ dependencies {
 All functionality is implemented in almost the same style as in Kotlin. All that has changed is that you need to use 
 callbacks for almost every function. Well, also lambdas are simply replaced with types.
 
+### Kotlin
+```kotlin
+suspend fun main() {
+    val fileManager = FileManager(File(""))
+    val activities = fileManager.getActivities()
+    fileManager.addActivity(SketchwareDataFile(/* data */))
+}
+```
+
+### In java with java-wrapper
 ```java
 public class Main {
     public static void main(String[] args) {
