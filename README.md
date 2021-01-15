@@ -82,3 +82,11 @@ dependencies {
     implementation("io.sketchware:Sketchware-Manager:alpha-2.2.5")
 }
 ```
+
+#### Java implementation
+To use the library in Java, you need to add an additional dependency:
+```groovy
+dependencies {
+    implementation 'io.sketchware:java-wrapper:alpha-2.2.4'
+}
+```
