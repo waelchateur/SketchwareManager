@@ -28,10 +28,14 @@ object SketchwareDataParser {
     }
 
     internal fun String.getByTag(tag: String): String? {
-        val result = "(?<=@)(${tag.replace(".", "\\.")}\b)(.*?)(?=\\n@|$)"
-            .toRegex()
+        val tagNormalized = tag.replace(".", "\\.")
+        val regex = Regex(
+            "(?<=@)($tagNormalized\\b)(.*?)(?=\\n@|$)",
+            RegexOption.DOT_MATCHES_ALL
+        )
+        val result = regex
             .find(this)
-        return result?.groups?.get(0)?.value
+        return result?.value
     }
 
     fun parseTextBlocks(input: String): List<List<String>> {

@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 class SketchwareDataFile(
     val fileName: String,
     val fileType: Int,
-    val keyboardSettings: Int,
+    val keyboardSetting: Int,
     val options: Int,
     val orientation: Int,
     val theme: Int

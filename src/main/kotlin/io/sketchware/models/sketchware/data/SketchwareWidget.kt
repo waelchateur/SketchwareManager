@@ -85,5 +85,5 @@ class SketchwareWidgetRoot(
     var text: SketchwareText? = null,
     var translationX: Double = 0.0,
     var translationY: Double = 0.0,
-    var type: Int = 0,
+    var type: Int = 0
 )

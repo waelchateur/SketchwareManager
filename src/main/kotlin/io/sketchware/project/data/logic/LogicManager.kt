@@ -7,6 +7,7 @@ import io.sketchware.models.sketchware.data.SketchwareEvent
 import io.sketchware.models.sketchware.data.SketchwareMoreblock
 import io.sketchware.models.sketchware.data.SketchwareVariable
 import io.sketchware.utils.*
+import io.sketchware.utils.SketchwareDataParser.getByTag
 import java.io.File
 
 open class LogicManager(private val file: File) {
@@ -18,14 +19,8 @@ open class LogicManager(private val file: File) {
         return decryptedString ?: throw error("list shouldn't be null")
     }
 
-    private suspend inline fun <reified T> getBlock(name: String): List<T>? {
-        val result = "(?<=@)(${name.replace(".", "\\.")})(.*?)(?=\\n@|$)"
-            .toRegex()
-            .find(getDecryptedString())
-        return if (result?.groups?.get(2) == null)
-            null
-        else BlockParser.parseAsArray(result.groups[2]!!.value)
-    }
+    private suspend inline fun <reified T> getBlock(name: String): List<T>? =
+        getDecryptedString().getByTag(name)?.let { BlockParser.parseAsArray(it) }
 
     private suspend fun getTextBlock(name: String): List<Pair<String, String>>? {
         val result = "(?<=@)($name)(.*?)(?=\\n@|$)".toRegex()

@@ -4,6 +4,7 @@ import io.sketchware.encryptor.FileEncryptor
 import io.sketchware.models.exceptions.SketchwareFileError
 import io.sketchware.models.sketchware.data.BlockDataModel
 import io.sketchware.models.sketchware.data.SketchwareWidget
+import io.sketchware.models.sketchware.data.SketchwareWidgetRoot
 import io.sketchware.utils.*
 import io.sketchware.utils.SketchwareDataParser.getByTag
 import io.sketchware.utils.SketchwareDataParser.toBlockDataModel
@@ -28,7 +29,7 @@ class ViewManager(private val file: File) {
      * @param viewName View Name (example: main)
      * @param widget specific widget to get (for example: fab).
      */
-    suspend fun getView(viewName: String, widget: String? = null): List<SketchwareWidget>? {
+    suspend fun getView(viewName: String, widget: String? = null): List<SketchwareWidgetRoot>? {
         val fullName = if(widget != null) "$viewName.xml_$widget" else "$viewName.xml"
         return getDecryptedString().getByTag(fullName)?.toBlockDataModel()
             ?.values?.map { it.toModel() }
@@ -37,19 +38,19 @@ class ViewManager(private val file: File) {
     suspend fun editView(
         viewName: String,
         widget: String? = null,
-        builder: ArrayList<SketchwareWidget>.() -> Unit
+        builder: ArrayList<SketchwareWidgetRoot>.() -> Unit
     ) = saveView(viewName, widget, ArrayList(getView(viewName, widget) ?: ArrayList()).apply(builder))
 
     suspend fun editView(
         viewName: String,
         widget: String? = null,
-        widgets: List<SketchwareWidget>
+        widgets: List<SketchwareWidgetRoot>
     ) = saveView(viewName, widget, widgets)
 
     private suspend fun saveView(
         viewName: String,
         widget: String? = null,
-        list: List<SketchwareWidget>
+        list: List<SketchwareWidgetRoot>
     ) {
         val name = "$viewName.xml".plus(
             if (widget == null)

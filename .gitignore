@@ -2,3 +2,5 @@
 /.idea/
 /.gradle/
 /build/
+/src/test/
+/java-wrapper/src/test/
