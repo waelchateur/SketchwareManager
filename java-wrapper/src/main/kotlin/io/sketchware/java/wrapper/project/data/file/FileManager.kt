@@ -12,15 +12,15 @@ import java.io.File
 class FileManager(private val file: File) : CoroutineScope {
     private val manager = FileManager(file)
 
-    fun interface onSketchwareDataFileLoadedCallback {
-        fun onLoad(data: List<SketchwareDataFile>)
+    fun interface OnSketchwareDataFileLoadedCallback {
+        fun onLoad(data: List<SketchwareDataFile>?)
     }
 
-    fun getActivities(callback: onSketchwareDataFileLoadedCallback) = launch {
+    fun getActivities(callback: OnSketchwareDataFileLoadedCallback) = launch {
         callback.onLoad(manager.getActivities())
     }
 
-    fun getCustomViews(callback: onSketchwareDataFileLoadedCallback) = launch {
+    fun getCustomViews(callback: OnSketchwareDataFileLoadedCallback) = launch {
         callback.onLoad(manager.getCustomViews())
     }
 

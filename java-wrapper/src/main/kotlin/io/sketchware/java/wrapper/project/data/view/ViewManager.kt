@@ -13,7 +13,7 @@ class ViewManager(file: File) : CoroutineScope {
     private val manager = ViewManager(file)
 
     fun interface OnViewLoadedCallback {
-        fun onLoad(widgets: List<SketchwareWidget>)
+        fun onLoad(widgets: List<SketchwareWidget>?)
     }
 
     fun getView(

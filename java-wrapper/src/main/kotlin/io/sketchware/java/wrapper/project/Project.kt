@@ -12,11 +12,11 @@ import kotlinx.coroutines.launch
 open class SketchwareProject(filesLocations: ProjectFilesLocations) : CoroutineScope {
     private val manager = SketchwareProject(filesLocations)
 
-    fun interface onConfigLoadedCallback {
+    fun interface OnConfigLoadedCallback {
         fun onLoad(config: ProjectConfig)
     }
 
-    fun getConfig(onConfigLoaded: onConfigLoadedCallback) = launch {
+    fun getConfig(onConfigLoaded: OnConfigLoadedCallback) = launch {
         onConfigLoaded.onLoad(manager.getConfig())
     }
 
