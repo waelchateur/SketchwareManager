@@ -84,9 +84,11 @@ dependencies {
 ```
 
 #### Java implementation
-To use the library in Java, you need to add an additional dependency:
+To use the library in Java, you need to add a dependency:
 ```groovy
 dependencies {
     implementation 'io.sketchware:java-wrapper:alpha-2.2.5'
 }
 ```
+More: 
+[Java tutorial](https://github.com/y9neon/SketchwareManager/tree/master/tutorials/How%20to%20use%20library%20in%20Java)
