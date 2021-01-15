@@ -19,6 +19,21 @@ object SketchwareDataParser {
         return output
     }
 
+    internal fun String.toBlockDataModel(): BlockDataModel {
+        return BlockDataModel(
+            this.substring(0, indexOf("\n")
+                .takeUnless { it == -1 } ?: length),
+            BlockParser.parseAsArray(this)
+        )
+    }
+
+    internal fun String.getByTag(tag: String): String? {
+        val result = "(?<=@)(${tag.replace(".", "\\.")}\b)(.*?)(?=\\n@|$)"
+            .toRegex()
+            .find(this)
+        return result?.groups?.get(0)?.value
+    }
+
     fun parseTextBlocks(input: String): List<List<String>> {
         return input
             .split("\n")

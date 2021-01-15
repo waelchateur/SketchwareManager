@@ -5,10 +5,11 @@ import io.sketchware.models.exceptions.SketchwareFileError
 import io.sketchware.models.sketchware.data.BlockDataModel
 import io.sketchware.models.sketchware.data.SketchwareWidget
 import io.sketchware.utils.*
+import io.sketchware.utils.SketchwareDataParser.getByTag
+import io.sketchware.utils.SketchwareDataParser.toBlockDataModel
 import java.io.File
 
 class ViewManager(private val file: File) {
-    private var list: List<BlockDataModel>? = null
     private var decryptedString: String? = null
 
     init {
@@ -22,36 +23,22 @@ class ViewManager(private val file: File) {
         return decryptedString ?: error("Decrypted string should be initialized")
     }
 
-    private suspend fun getList(): List<BlockDataModel> {
-        if (list == null)
-            list = SketchwareDataParser.parseJsonBlocks(getDecryptedString())
-        return list ?: error("List shouldn't be null")
-    }
-
     /**
      * Get widgets by activity name.
-     * @param viewName Activity Name (example: MainActivity, main)
+     * @param viewName View Name (example: main)
      * @param widget specific widget to get (for example: fab).
      */
-    suspend fun getView(viewName: String, widget: String? = null): List<SketchwareWidget> {
-        return getList().filter {
-            it.name == "$viewName.xml".plus(
-                if (widget == null)
-                    "" else "_$widget"
-            )
-        }.map { (name, values) ->
-            SketchwareWidget(
-                name.substring(name.indexOf("_") + 1, name.length),
-                values.map { it.toModel() }
-            )
-        }
+    suspend fun getView(viewName: String, widget: String? = null): List<SketchwareWidget>? {
+        val fullName = if(widget != null) "$viewName.xml_$widget" else "$viewName.xml"
+        return getDecryptedString().getByTag(fullName)?.toBlockDataModel()
+            ?.values?.map { it.toModel() }
     }
 
     suspend fun editView(
         viewName: String,
         widget: String? = null,
         builder: ArrayList<SketchwareWidget>.() -> Unit
-    ) = saveView(viewName, widget, ArrayList(getView(viewName, widget)).apply(builder))
+    ) = saveView(viewName, widget, ArrayList(getView(viewName, widget) ?: ArrayList()).apply(builder))
 
     suspend fun editView(
         viewName: String,
@@ -75,7 +62,6 @@ class ViewManager(private val file: File) {
             else "@$name${BlockParser.toSaveableValue(list)}\n\n"
         )
         file.writeFile(FileEncryptor.encrypt(getDecryptedString().toByteArray()))
-        this.list = null
         decryptedString = null
     }
 

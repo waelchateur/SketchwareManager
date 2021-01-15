@@ -19,8 +19,8 @@ class SketchwareCollection(
      * Get array of Collection Item with information about items
      */
     suspend fun getCollection(): List<CollectionItem> {
-        val moreblocks = String(collectionFile.readFile())
-        return BlockParser.parseAsArray(moreblocks)
+        val collection = String(collectionFile.readFile())
+        return BlockParser.parseAsArray(collection)
     }
 
     /**

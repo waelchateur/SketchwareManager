@@ -5,10 +5,11 @@ import io.sketchware.models.exceptions.SketchwareFileError
 import io.sketchware.models.sketchware.data.BlockDataModel
 import io.sketchware.models.sketchware.data.SketchwareDataFile
 import io.sketchware.utils.*
+import io.sketchware.utils.SketchwareDataParser.getByTag
+import io.sketchware.utils.SketchwareDataParser.toBlockDataModel
 import java.io.File
 
 class FileManager(private val file: File) {
-    private var list: List<BlockDataModel>? = null
     private var decryptedString: String? = null
 
     init {
@@ -22,23 +23,13 @@ class FileManager(private val file: File) {
         return decryptedString ?: error("Decrypted string should be initialized")
     }
 
-    private suspend fun getList(): List<BlockDataModel> {
-        if (list == null)
-            list = SketchwareDataParser.parseJsonBlocks(getDecryptedString())
-        return list ?: error("List shouldn't be null")
-    }
+    suspend fun getActivities(): List<SketchwareDataFile>? =
+        getDecryptedString().getByTag("activity")?.toBlockDataModel()
+            ?.values?.map { it.toModel() }
 
-    suspend fun getActivities(): List<SketchwareDataFile> {
-        return getList().find {
-            it.name == "activity"
-        }?.values?.map { it.toModel() }!!
-    }
-
-    suspend fun getCustomViews(): List<SketchwareDataFile> {
-        return getList().find {
-            it.name == "customview"
-        }?.values?.map { it.toModel() }!!
-    }
+    suspend fun getCustomViews(): List<SketchwareDataFile>? =
+        getDecryptedString().getByTag("customview")?.toBlockDataModel()
+            ?.values?.map { it.toModel() }
 
     private suspend fun save(title: String, list: List<SketchwareDataFile>) {
         decryptedString = getDecryptedString().replaceOrInsertAtTop(
@@ -48,7 +39,6 @@ class FileManager(private val file: File) {
             else "@$title${BlockParser.toSaveableValue(list)}\n"
         )
         file.writeFile(getDecryptedString().toByteArray())
-        this.list = null
         this.decryptedString = null
     }
 
@@ -57,7 +47,7 @@ class FileManager(private val file: File) {
      * @param activity data about activity.
      */
     suspend fun addActivity(activity: SketchwareDataFile) {
-        val list = ArrayList(getActivities())
+        val list = ArrayList(getActivities() ?: ArrayList())
         list.add(activity)
         save("activity", list)
     }
@@ -67,7 +57,7 @@ class FileManager(private val file: File) {
      * @param customView data about custom view.
      */
     suspend fun addCustomView(customView: SketchwareDataFile) {
-        val list = ArrayList(getCustomViews())
+        val list = ArrayList(getCustomViews() ?: ArrayList())
         list.add(customView)
         save("customview", list)
     }
