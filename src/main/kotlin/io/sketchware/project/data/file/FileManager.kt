@@ -2,7 +2,6 @@ package io.sketchware.project.data.file
 
 import io.sketchware.encryptor.FileEncryptor
 import io.sketchware.models.exceptions.SketchwareFileError
-import io.sketchware.models.sketchware.data.BlockDataModel
 import io.sketchware.models.sketchware.data.SketchwareDataFile
 import io.sketchware.utils.*
 import io.sketchware.utils.SketchwareDataParser.getByTag

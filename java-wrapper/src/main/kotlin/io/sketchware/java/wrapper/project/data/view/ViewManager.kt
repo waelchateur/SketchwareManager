@@ -1,7 +1,6 @@
 package io.sketchware.java.wrapper.project.data.view
 
 import io.sketchware.java.wrapper.common.OnActionFinishedCallback
-import io.sketchware.models.sketchware.data.SketchwareWidget
 import io.sketchware.models.sketchware.data.SketchwareWidgetRoot
 import io.sketchware.project.data.view.ViewManager
 import kotlinx.coroutines.CoroutineScope

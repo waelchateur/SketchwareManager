@@ -1,7 +1,12 @@
 package io.sketchware.resources.blocks
 
-import io.sketchware.models.sketchwarepro.resources.*
-import io.sketchware.utils.*
+import io.sketchware.models.sketchwarepro.resources.CustomBlock
+import io.sketchware.models.sketchwarepro.resources.CustomBlockGroup
+import io.sketchware.models.sketchwarepro.resources.Palette
+import io.sketchware.utils.readFileOrNull
+import io.sketchware.utils.serializeOrNull
+import io.sketchware.utils.toJson
+import io.sketchware.utils.writeFile
 import java.io.File
 
 class SketchwareProCustomBlocksManager(

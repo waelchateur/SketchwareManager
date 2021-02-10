@@ -39,7 +39,7 @@ class Exportable(
         suspend fun getItemsFromFolder(folder: File): List<ExportableItem> {
             val output = mutableListOf<ExportableItem>()
             folder.getListFiles()?.forEach {
-                if(it.isDirectory)
+                if (it.isDirectory)
                     output.addAll(getItemsFromFolder(folder))
                 else output.add(ExportableItem(folder.parentFile.name, folder.name, it.readBytes()))
             }

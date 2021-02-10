@@ -1,6 +1,6 @@
 # How to use library in Java
 
-Since the library was originally focused on Kotlin and used suspend functions 
+Since the library was originally focused on Kotlin and used suspend functions
 (which do not work in Java), you need to add one more dependency:
 
 ```groovy
@@ -9,10 +9,11 @@ dependencies {
 }
 ```
 
-All functionality is implemented in almost the same style as in Kotlin. All that has changed is that you need to use 
+All functionality is implemented in almost the same style as in Kotlin. All that has changed is that you need to use
 callbacks for almost every function. Well, also lambdas are simply replaced with types.
 
 ### Kotlin
+
 ```kotlin
 suspend fun main() {
     val fileManager = FileManager(File(""))
@@ -22,6 +23,7 @@ suspend fun main() {
 ```
 
 ### In java with java-wrapper
+
 ```java
 public class Main {
     public static void main(String[] args) {
@@ -46,4 +48,5 @@ public class Main {
     }
 }
 ```
+
 #### ⚠ Also, make sure you import the classes from the io.sketchware.java.wrapper package.

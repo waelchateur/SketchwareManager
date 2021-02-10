@@ -5,7 +5,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 internal suspend fun File.writeFile(bytes: ByteArray) = withContext(Dispatchers.IO) {
-    if(!parentFile.exists()) parentFile.mkdirs()
+    if (!parentFile.exists()) parentFile.mkdirs()
     writeBytes(bytes)
 }
 

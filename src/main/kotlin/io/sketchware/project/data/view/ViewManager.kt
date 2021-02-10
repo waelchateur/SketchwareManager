@@ -2,8 +2,6 @@ package io.sketchware.project.data.view
 
 import io.sketchware.encryptor.FileEncryptor
 import io.sketchware.models.exceptions.SketchwareFileError
-import io.sketchware.models.sketchware.data.BlockDataModel
-import io.sketchware.models.sketchware.data.SketchwareWidget
 import io.sketchware.models.sketchware.data.SketchwareWidgetRoot
 import io.sketchware.utils.*
 import io.sketchware.utils.SketchwareDataParser.getByTag
@@ -30,7 +28,7 @@ class ViewManager(private val file: File) {
      * @param widget specific widget to get (for example: fab).
      */
     suspend fun getView(viewName: String, widget: String? = null): List<SketchwareWidgetRoot>? {
-        val fullName = if(widget != null) "$viewName.xml_$widget" else "$viewName.xml"
+        val fullName = if (widget != null) "$viewName.xml_$widget" else "$viewName.xml"
         return getDecryptedString().getByTag(fullName)?.toBlockDataModel()
             ?.values?.map { it.toModel() }
     }

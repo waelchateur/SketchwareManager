@@ -3,7 +3,6 @@ package io.sketchware.models.sketchware
 import io.sketchware.models.exportable.ProjectExportableConfig
 import io.sketchware.models.exportable.ProjectType
 import io.sketchware.utils.*
-import io.sketchware.utils.getListFiles
 import java.io.File
 
 data class ProjectFilesLocations(
