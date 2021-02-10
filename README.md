@@ -79,7 +79,7 @@ repositories {
     maven("https://dl.bintray.com/kotlingang/maven")
 }
 dependencies {
-    implementation("io.sketchware:Sketchware-Manager:alpha-2.2.6")
+    implementation("io.sketchware:Sketchware-Manager:alpha-2.2.8")
 }
 ```
 
