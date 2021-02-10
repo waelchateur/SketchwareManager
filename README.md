@@ -89,7 +89,7 @@ To use the library in Java, you need to add a dependency:
 
 ```groovy
 dependencies {
-    implementation 'io.sketchware:java-wrapper:alpha-2.2.6'
+    implementation 'io.sketchware:java-wrapper:alpha-2.2.8'
 }
 ```
 
