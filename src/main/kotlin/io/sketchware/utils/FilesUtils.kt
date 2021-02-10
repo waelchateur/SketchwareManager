@@ -5,11 +5,20 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 internal suspend fun File.writeFile(bytes: ByteArray) = withContext(Dispatchers.IO) {
+    if(!parentFile.exists()) parentFile.mkdirs()
     writeBytes(bytes)
 }
 
 suspend fun File.readFile(): ByteArray = withContext(Dispatchers.IO) {
     return@withContext readBytes()
+}
+
+internal suspend fun File.readFileOrNull(): ByteArray? = withContext(Dispatchers.IO) {
+    return@withContext try {
+        readFile()
+    } catch (e: Exception) {
+        null
+    }
 }
 
 internal suspend fun File.getListFiles(): List<File>? = withContext(Dispatchers.IO) {

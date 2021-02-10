@@ -23,5 +23,19 @@ data class ProjectDestination(
                 )
             )
         }
+
+        fun createExportable(folder: File): ProjectDestination {
+            return ProjectDestination(
+                File(folder, "project.config"),
+                File(folder, "data"),
+                SketchwareProjectResources(
+                    File(folder, "resources/images"),
+                    File(folder, "resources/icons"),
+                    File(folder, "resources/fonts"),
+                    File(folder, "resources/sounds")
+                )
+            )
+        }
+
     }
 }

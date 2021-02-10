@@ -38,7 +38,7 @@ class FileManager(private val file: File) {
                 ""
             else "@$title${BlockParser.toSaveableValue(list)}\n"
         )
-        file.writeFile(getDecryptedString().toByteArray())
+        file.writeFile(FileEncryptor.encrypt(getDecryptedString().toByteArray()))
         this.decryptedString = null
     }
 
@@ -47,7 +47,7 @@ class FileManager(private val file: File) {
      * @param activity data about activity.
      */
     suspend fun addActivity(activity: SketchwareDataFile) {
-        val list = ArrayList(getActivities() ?: ArrayList())
+        val list = getActivities()?.toMutableList() ?: mutableListOf()
         list.add(activity)
         save("activity", list)
     }
@@ -57,7 +57,7 @@ class FileManager(private val file: File) {
      * @param customView data about custom view.
      */
     suspend fun addCustomView(customView: SketchwareDataFile) {
-        val list = ArrayList(getCustomViews() ?: ArrayList())
+        val list = getCustomViews()?.toMutableList() ?: mutableListOf()
         list.add(customView)
         save("customview", list)
     }

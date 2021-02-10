@@ -1,5 +1,9 @@
 package io.sketchware.models.sketchware
 
+import io.sketchware.models.exportable.ProjectExportableConfig
+import io.sketchware.models.exportable.ProjectType
+import io.sketchware.utils.*
+import io.sketchware.utils.getListFiles
 import java.io.File
 
 data class ProjectFilesLocations(
@@ -66,6 +70,32 @@ data class ProjectFilesLocations(
         }
 
     }
+
+    suspend fun toExportable(): Exportable {
+        val exportableItems = mutableListOf<ExportableItem>()
+        val config = ProjectExportableConfig(
+            System.currentTimeMillis(),
+            if (data is SketchwareProProjectDataFiles) ProjectType.SketchwarePro
+            else ProjectType.Sketchware
+        )
+        exportableItems.add(ExportableItem(fileName = "export.config", value = config.toJson().toByteArray()))
+        exportableItems.addAll(Exportable.getItemsFromFolder(data.dataFolder))
+        resources.fonts.getListFiles()?.forEach {
+            exportableItems.add(ExportableItem("resources/fonts", it.name, it.readFile()))
+        }
+        resources.sounds.getListFiles()?.forEach {
+            exportableItems.add(ExportableItem("resources/sounds", it.name, it.readFile()))
+        }
+        resources.images.getListFiles()?.forEach {
+            exportableItems.add(ExportableItem("resources/images", it.name, it.readFile()))
+        }
+        resources.icons.getListFiles()?.forEach {
+            exportableItems.add(ExportableItem("resources/icons", it.name, it.readFile()))
+        }
+        exportableItems.add(ExportableItem(fileName = "projectConfig.swe", value = mysc.configFile.readFile()))
+        return Exportable(exportableItems)
+    }
+
 }
 
 data class ProjectMyscFiles(

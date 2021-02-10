@@ -10,6 +10,14 @@ inline fun <reified T> String.serialize(): T {
     return Json.decodeFromString(this)
 }
 
+inline fun <reified T> String.serializeOrNull(): T? {
+    return try {
+        Json.decodeFromString(this)
+    } catch (e: Exception) {
+        null
+    }
+}
+
 internal inline fun <reified T> ByteArray.serialize() = String(this).serialize<T>()
 
 inline fun <reified T> JsonObject.toModel() = Json.decodeFromJsonElement<T>(this)

@@ -4,8 +4,6 @@ import io.sketchware.encryptor.FileEncryptor
 import io.sketchware.models.sketchware.ProjectConfig
 import io.sketchware.models.sketchware.ProjectDestination
 import io.sketchware.models.sketchware.ProjectFilesLocations
-import io.sketchware.models.sketchware.SketchwareProProjectDataFiles
-import io.sketchware.models.sketchwarepro.ProguardConfig
 import io.sketchware.project.data.file.FileManager
 import io.sketchware.project.data.library.LibraryManager
 import io.sketchware.project.data.logic.LogicManager
@@ -53,7 +51,14 @@ open class SketchwareProject(
     }
 
     /**
-     * Automatically based on [filesLocations] variable is determined by [LogicManager].
+     * An instance of the [Exportable] class for exporting a project based on [filesLocations].
+     */
+    suspend fun getDefaultExportable(): Exportable {
+        return filesLocations.toExportable()
+    }
+
+    /**
+     * Automatically based on [filesLocations] variable is determined by [FileManager].
      * Responsible for the custom views, activity views.
      * @return [FileManager] based on [filesLocations] variable paths.
      */
@@ -67,7 +72,7 @@ open class SketchwareProject(
     open val libraryManager by lazy { LibraryManager(filesLocations.data.libraryFile) }
 
     /**
-     * Automatically based on [filesLocations] variable is determined by [LibraryManager].
+     * Automatically based on [filesLocations] variable is determined by [LogicManager].
      * Responsible for the logic of the project (events, moreblocks, etc.).
      * @return [LogicManager] based on [filesLocations] variable paths.
      */
@@ -82,9 +87,9 @@ open class SketchwareProject(
 
 
     /**
-     * Automatically based on [filesLocations] variable is determined by [ResourcesManager].
+     * Automatically based on [filesLocations] variable is determined by [ViewManager].
      * Responsible for the views content (xml).
-     * @return [ResourcesManager] based on [filesLocations] variable paths.
+     * @return [ViewManager] based on [filesLocations] variable paths.
      */
     open val viewManager by lazy { ViewManager(filesLocations.data.viewFile) }
 
@@ -106,43 +111,6 @@ open class SketchwareProject(
         resources.images.copyFolder(destination.projectResources.images)
         resources.fonts.copyFolder(destination.projectResources.fonts)
         resources.icons.copyFolder(destination.projectResources.icons)
-    }
-
-    open suspend fun export(zipDestination: File) {
-    }
-
-}
-
-open class SketchwareProProject(
-    private val filesLocations: ProjectFilesLocations
-) : SketchwareProject(filesLocations) {
-
-    constructor(sketchwareFolder: File, projectId: Int) :
-            this(ProjectFilesLocations.defaultSketchwareProject(sketchwareFolder, projectId))
-
-    constructor(sketchwareFolderPath: String, projectId: Int) :
-            this(File(sketchwareFolderPath), projectId)
-
-    private fun getData() = filesLocations.data as SketchwareProProjectDataFiles
-
-    suspend fun getProguardRules(): String {
-        return String(
-            getData().proguardRulesFile.readFile()
-        )
-    }
-
-    suspend fun getProguardConfig(): ProguardConfig? {
-        return String(
-            getData().proguardConfigFile.readFile()
-        ).serialize()
-    }
-
-    suspend fun setProguardRules(rules: String) {
-        getData().proguardRulesFile.writeFile(rules.toByteArray())
-    }
-
-    suspend fun setProguardConfig(config: ProguardConfig) {
-        getData().proguardConfigFile.writeFile(config.toJson().toByteArray())
     }
 
 }

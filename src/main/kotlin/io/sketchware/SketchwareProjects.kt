@@ -31,8 +31,12 @@ class SketchwareProjects(private val sketchwareFolder: File) {
     fun isSketchwareProProject(id: Int) =
         File(sketchwareFolder, "/data/$id/project_config").exists()
 
+    suspend fun import(folder: File) {
+
+    }
+
     private fun getFreeId(startId: Int): Int {
-        File(File(sketchwareFolder, "mysc"), "list").listFiles()!!.forEach {
+        File(File(sketchwareFolder, "mysc"), "list").listFiles()?.forEach {
             if (it.name == startId.toString())
                 return getFreeId(startId + 1)
         }

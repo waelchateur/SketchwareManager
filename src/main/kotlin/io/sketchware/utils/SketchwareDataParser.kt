@@ -8,7 +8,7 @@ object SketchwareDataParser {
     private val regex = Regex("(?<=@).*?(?=\\n@|\$)", RegexOption.DOT_MATCHES_ALL)
 
     fun parseJsonBlocks(input: String): List<BlockDataModel> {
-        val output = ArrayList<BlockDataModel>()
+        val output = mutableListOf<BlockDataModel>()
         regex.findAll(input).forEach { matchResult ->
             val name = matchResult.value.substring(
                 0, matchResult.value.indexOf("\n")
