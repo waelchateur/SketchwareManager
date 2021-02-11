@@ -22,7 +22,7 @@ open class LogicManager(private val file: File) {
     private var decryptedString: String? = null
 
     init {
-        if(!file.isFile || !file.exists())
+        if (!file.isFile || !file.exists())
             throw SketchwareFileError(file.path)
     }
 
@@ -36,7 +36,8 @@ open class LogicManager(private val file: File) {
         getDecryptedString().getByTag(name)?.let { BlockParser.parseAsArray(it) }
 
     private suspend fun getTextBlock(name: String): List<Pair<String, String>>? {
-        val result = "(?<=@)($name)(.*?)(?=\\n@|$)".toRegex()
+        val nameNormalized = name.replace(".", "\\.")
+        val result = Regex("(?<=@)($nameNormalized)(.*?)(?=\\n@|$)", RegexOption.DOT_MATCHES_ALL)
             .find(getDecryptedString())
         if (result?.groups?.get(2) == null)
             return null
@@ -121,7 +122,7 @@ open class LogicManager(private val file: File) {
      * @return list of [SketchwareVariable] or null if activity / variables doesn't exist.
      */
     suspend fun getVariablesOrNull(activity: String) =
-        getTextBlock("$activity.java_var")?.map { (name, type) ->
+        getTextBlock("$activity.java_var")?.map { (type, name) ->
             SketchwareVariable(name, type.toInt())
         }
 
@@ -286,7 +287,8 @@ open class LogicManager(private val file: File) {
      * @param component Sketchware Component
      */
     suspend fun addComponent(activity: String, component: SketchwareComponent) {
-        val components = ArrayList(getComponents(activity) ?: ArrayList())
+        val components = getComponentsOrNull(activity)?.toMutableList()
+            ?: mutableListOf()
         components.add(component)
         saveComponents(activity, components)
     }
@@ -300,7 +302,7 @@ open class LogicManager(private val file: File) {
         saveBlock("$activity.java_var", list.joinToString("\n") { "${it.name}:${it.type}" })
 
     private suspend fun saveMoreblocks(activity: String, list: List<SketchwareMoreblock>) =
-        saveBlock("$activity.java_func", list.joinToString("\n") { "${it.name}:${it.data}" })
+        saveBlock("$activity.java_func", list.joinToString("\n"))
 
     /**
      * Add variable to specific activity.
@@ -308,7 +310,7 @@ open class LogicManager(private val file: File) {
      * @param variable SketchwareVariable instance which contains data about variable
      */
     suspend fun addVariable(activity: String, variable: SketchwareVariable) {
-        val variables = ArrayList(getVariables(activity) ?: ArrayList())
+        val variables = getVariablesOrNull(activity)?.toMutableList() ?: mutableListOf()
         variables.add(variable)
         saveVariables(activity, variables)
     }
@@ -335,14 +337,16 @@ open class LogicManager(private val file: File) {
         moreblock: SketchwareMoreblock,
         contentBlocks: List<SketchwareBlock>
     ) {
-        val moreblocks = ArrayList(getMoreblocks(activity) ?: ArrayList())
+        val moreblocks = getMoreblocksOrNull(activity)?.toMutableList() ?: mutableListOf()
         moreblocks.add(moreblock)
+        println("Activity name $activity")
+        println("Moreblock name ${moreblock.name}")
         saveMoreblocks(activity, moreblocks)
         saveMoreblockLogic(activity, moreblock.name, contentBlocks)
     }
 
     private suspend fun saveMoreblockLogic(activity: String, name: String, list: List<SketchwareBlock>) =
-        saveLogic(activity, "$activity.java_${name}_moreBlock", list)
+        saveLogic(activity, "${name}_moreBlock", list)
 
     private suspend fun saveEventLogic(
         activity: String,

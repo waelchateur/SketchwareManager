@@ -68,7 +68,7 @@ repositories {
     maven { url 'https://dl.bintray.com/kotlingang/maven' }
 }
 dependencies {
-    implementation 'io.sketchware:Sketchware-Manager:alpha-2.2.6'
+    implementation 'io.sketchware:Sketchware-Manager:alpha-2.2.9'
 }
 ```
 
@@ -79,7 +79,7 @@ repositories {
     maven("https://dl.bintray.com/kotlingang/maven")
 }
 dependencies {
-    implementation("io.sketchware:Sketchware-Manager:alpha-2.2.8")
+    implementation("io.sketchware:Sketchware-Manager:alpha-2.2.9")
 }
 ```
 
@@ -89,7 +89,7 @@ To use the library in Java, you need to add a dependency:
 
 ```groovy
 dependencies {
-    implementation 'io.sketchware:java-wrapper:alpha-2.2.8'
+    implementation 'io.sketchware:java-wrapper:alpha-2.2.9'
 }
 ```
 

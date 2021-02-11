@@ -37,7 +37,7 @@ val localProperties = project.rootProject.file("local.properties")
 
 allprojects {
     group = "io.sketchware"
-    version = "dev-2.2.8"
+    version = "dev-2.2.9"
 
     apply(plugin = "maven-publish")
 

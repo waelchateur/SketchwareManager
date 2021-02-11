@@ -11,8 +11,6 @@ import io.sketchware.project.data.resource.ResourcesManager
 import io.sketchware.project.data.view.ViewManager
 import io.sketchware.utils.*
 import java.io.File
-import java.io.IOException
-import kotlin.jvm.Throws
 
 /**
  * Responsible for working with the project, stores instances of logic,

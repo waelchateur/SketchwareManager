@@ -13,7 +13,6 @@ import io.sketchware.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.jvm.Throws
 
 /**
  * Responsible for working with the project, stores instances of logic,
