@@ -11,7 +11,14 @@ import io.sketchware.project.data.resource.ResourcesManager
 import io.sketchware.project.data.view.ViewManager
 import io.sketchware.utils.*
 import java.io.File
+import java.io.IOException
+import kotlin.jvm.Throws
 
+/**
+ * Responsible for working with the project, stores instances of logic,
+ * view, resource, library managers. Also a unique API for working with other parts of the project.
+ * @param filesLocations locations of project files.
+ */
 open class SketchwareProject(
     private val filesLocations: ProjectFilesLocations
 ) {
@@ -36,14 +43,26 @@ open class SketchwareProject(
         )
     }
 
+    /**
+     * Reads and serializes data about the project: its id, name, and so on.
+     */
     open suspend fun getConfig(): ProjectConfig {
         return String(
             FileEncryptor.decrypt(filesLocations.mysc.configFile.readFile())
         ).serialize()
     }
 
-    open suspend fun editConfig(builder: ProjectConfig.() -> Unit) = editConfig(getConfig().apply(builder))
+    /**
+     * Changes the project config to a new one.
+     * @param [builder] Lambda with context [ProjectConfig] for editing existing configuration.
+     */
+    open suspend fun editConfig(builder: ProjectConfig.() -> Unit) =
+        editConfig(getConfig().apply(builder))
 
+    /**
+     * Changes the project config to a new one.
+     * @param [config] new config to save.
+     */
     open suspend fun editConfig(config: ProjectConfig) {
         filesLocations.mysc.configFile.writeFile(
             FileEncryptor.encrypt(config.toJson().toByteArray())

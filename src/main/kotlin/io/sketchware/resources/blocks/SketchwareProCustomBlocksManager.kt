@@ -9,6 +9,11 @@ import io.sketchware.utils.toJson
 import io.sketchware.utils.writeFile
 import java.io.File
 
+/**
+ * Responsible for working with Sketchware Pro custom blocks.
+ * @param blockFile File which usually located at ../.sketchware/resources/block/My Block/block.json
+ * @param paletteFile File which usually located at ../.sketchware/resources/block/My Block/palette.json
+ */
 class SketchwareProCustomBlocksManager(
     private val blockFile: File,
     private val paletteFile: File

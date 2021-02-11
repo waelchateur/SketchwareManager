@@ -9,6 +9,11 @@ import io.sketchware.utils.toJson
 import io.sketchware.utils.writeFile
 import java.io.File
 
+/**
+ * Responsible for working with Sketchware Pro custom menus.
+ * @param menuBlockFile File which usually located at ../.sketchware/resources/block/Menu Block/block.json
+ * @param menuDataFile File which usually located at ../.sketchware/resources/block/Menu Block/data.json
+ */
 class SketchwareProCustomMenusManager(
     private val menuBlockFile: File,
     private val menuDataFile: File
@@ -32,6 +37,8 @@ class SketchwareProCustomMenusManager(
 
             return@map CustomMenu(
                 menus.map(BlockInputMenu::id).first(key::equals),
+                menus.find { key == it.id }?.name
+                    ?: error("Unexpected error while getting custom menu. Name is unspecified."),
                 menu[0].title,
                 values
             )
@@ -56,10 +63,20 @@ class SketchwareProCustomMenusManager(
         }
     )
 
+    /**
+     * Edits custom menu.
+     * @param id menu string id.
+     * @param builder Lambda with [CustomMenu] in context to edit already exists menu data.
+     */
     suspend fun editMenu(id: String, builder: CustomMenu.() -> Unit) = editMenu(
         id, getCustomMenus().toMutableList().first { it.id == id }.apply(builder)
     )
 
+    /**
+     * Edits custom menu.
+     * @param id menu string id.
+     * @param menu new menu data.
+     */
     suspend fun editMenu(id: String, menu: CustomMenu) = saveCustomMenus(
         getCustomMenus().toMutableList().apply {
             val oldMenu = first { it.id == id }
@@ -68,7 +85,16 @@ class SketchwareProCustomMenusManager(
     )
 
     private suspend fun saveCustomMenus(list: List<CustomMenu>) {
-        menuBlockFile.writeFile(list.toJson().toByteArray())
+        val blocks = mutableListOf<BlockInputMenu>()
+        val dataList = mutableListOf<MutableMap<String, List<MenuData>>>()
+        list.forEach {
+            blocks.add(BlockInputMenu(it.id, it.name))
+            val data = mutableMapOf<String, List<MenuData>>()
+            data[it.id] = listOf(MenuData(it.title, it.options.joinToString("+")))
+            dataList.add(data)
+        }
+        menuBlockFile.writeFile(blocks.toJson().toByteArray())
+        menuDataFile.writeFile(dataList.toJson().toByteArray())
     }
 
 }
