@@ -1,12 +1,18 @@
 package io.sketchware.project.data.library
 
 import io.sketchware.encryptor.FileEncryptor
+import io.sketchware.models.exceptions.LibraryInformationException
 import io.sketchware.models.exceptions.SketchwareFileError
 import io.sketchware.models.sketchware.data.BlockDataModel
 import io.sketchware.models.sketchware.data.SketchwareLibrary
 import io.sketchware.utils.*
 import java.io.File
 
+/**
+ * The class is responsible for managing the libraries of the project.
+ * @param file File which which is usually found along the path ../.sketchware/data/%PROJECT_ID%/library.
+ * @throws [SketchwareFileError] if [file] doesn't exist or it isn't a file.
+ */
 class LibraryManager(private val file: File) {
     private var list: List<BlockDataModel>? = null
     private var decryptedString: String? = null
@@ -28,11 +34,16 @@ class LibraryManager(private val file: File) {
         return list ?: error("List shouldn't be null")
     }
 
+    /**
+     * Gets list of [SketchwareLibrary] in specific project.
+     * @throws [SketchwareLibrary] if library configured incorrectly.
+     * @return list of [SketchwareLibrary] or exception.
+     */
     suspend fun getLibraries(): List<SketchwareLibrary> {
         return getList().map {
             SketchwareLibrary(
                 it.name, it.values.singleOrNull()?.toModel()
-                    ?: error("library don't have any information.")
+                    ?: throw LibraryInformationException(it.name, file.path)
             )
         }
     }

@@ -1,6 +1,7 @@
 package io.sketchware.project.data.logic
 
 import io.sketchware.encryptor.FileEncryptor
+import io.sketchware.models.exceptions.*
 import io.sketchware.models.sketchware.SketchwareBlock
 import io.sketchware.models.sketchware.data.SketchwareComponent
 import io.sketchware.models.sketchware.data.SketchwareEvent
@@ -10,8 +11,20 @@ import io.sketchware.utils.*
 import io.sketchware.utils.SketchwareDataParser.getByTag
 import java.io.File
 
+/**
+ * The class is responsible for managing the logic of the project,
+ * which is usually found along the path ../.sketchware/data/%PROJECT_ID%/logic.
+ * It stores data about variables, moreblocks, events, components and their states / logic.
+ * @param [file] File with project logic.
+ * @throws [SketchwareFileError] if [file] doesn't exists or not a file.
+ */
 open class LogicManager(private val file: File) {
     private var decryptedString: String? = null
+
+    init {
+        if(!file.isFile || !file.exists())
+            throw SketchwareFileError(file.path)
+    }
 
     private suspend fun getDecryptedString(): String {
         if (decryptedString == null)
@@ -41,63 +54,138 @@ open class LogicManager(private val file: File) {
             "@$name$stringToSave\n\n"
         )
         file.writeFile(FileEncryptor.encrypt(getDecryptedString().toByteArray()))
-        decryptedString = null
     }
 
     /**
      * Get activity events
      * @param activity activity name (Example: MainActivity)
+     * @return List of events or null if no events in specific activity.
+     */
+    suspend fun getEventsOrNull(activity: String) =
+        getBlock<SketchwareEvent>("$activity.java_events")
+
+
+    /**
+     * Get activity events
+     * @param activity activity name (Example: MainActivity)
+     * @return List of events or exception if no events in specific activity.
+     * @throws [EventsNotFoundException] if no events in specific activity or activity doesn't exist.
      */
     suspend fun getEvents(activity: String) =
-        getBlock<SketchwareEvent>("$activity.java_events")
+        getEventsOrNull(activity) ?: throw EventsNotFoundException(activity)
 
     /**
      * Get activity moreblocks
      * @param activity activity name (Example: MainActivity)
+     * @return List of [SketchwareMoreblock] in specific activity or null
+     * if activity / moreblocks doesn't exist.
      */
-    suspend fun getMoreblocks(activity: String) =
+    suspend fun getMoreblocksOrNull(activity: String) =
         getTextBlock("$activity.java_func")?.map { (name, data) ->
             SketchwareMoreblock(name, data)
         }
 
     /**
+     * Get activity moreblocks
+     * @param activity activity name (Example: MainActivity)
+     * @return List of [SketchwareMoreblock] in specific activity or exception
+     * if activity / moreblocks doesn't exist.
+     * @throws [MoreblocksNotFoundException] if activity / moreblocks doesn't exist.
+     */
+    @Throws(MoreblocksNotFoundException::class)
+    suspend fun getMoreblocks(activity: String) =
+        getMoreblocksOrNull(activity) ?: throw MoreblocksNotFoundException(activity)
+
+    /**
      * Get components in specific activity.
      * @param activity activity name (Example: MainActivity)
-     * @return List of SketchwareComponent.
+     * @return List of SketchwareComponent or null if activity / components doesn't exist.
      */
-    suspend fun getComponents(activity: String): List<SketchwareComponent>? =
+    suspend fun getComponentsOrNull(activity: String): List<SketchwareComponent>? =
         getBlock("$activity.java_components")
+
+    /**
+     * Get components in specific activity.
+     * @param activity activity name (Example: MainActivity)
+     * @return List of SketchwareComponent or [ComponentsNotFoundException]
+     * exception if activity / components doesn't exist.
+     * @throws [ComponentsNotFoundException] if activity / components doesn't exist.
+     */
+    @Throws(ComponentsNotFoundException::class)
+    suspend fun getComponents(activity: String) =
+        getComponentsOrNull(activity) ?: throw ComponentsNotFoundException(activity)
 
     /**
      * Get variables in specific activity.
      * @param activity Activity name (example: MainActivity)
+     * @return list of [SketchwareVariable] or null if activity / variables doesn't exist.
      */
-    suspend fun getVariables(activity: String) =
+    suspend fun getVariablesOrNull(activity: String) =
         getTextBlock("$activity.java_var")?.map { (name, type) ->
             SketchwareVariable(name, type.toInt())
         }
 
     /**
-     * Get logic of moreblock.
-     * @return blocks in moreblock.
+     * Get variables in specific activity.
+     * @param activity Activity name (example: MainActivity)
+     * @return list of [SketchwareVariable] or
+     * [VariablesNotFoundException] exception if activity / variables doesn't exist.
+     * @throws [VariablesNotFoundException] exception if activity / variables doesn't exist.
      */
-    suspend fun getMoreblockLogic(activity: String, name: String): List<SketchwareBlock>? =
+    @Throws(VariablesNotFoundException::class)
+    suspend fun getVariables(activity: String) =
+        getVariablesOrNull(activity) ?: throw VariablesNotFoundException(activity)
+
+    /**
+     * Gets logic of moreblock.
+     * @return blocks in moreblock or null if activity / moreblock doesn't exists.
+     */
+    suspend fun getMoreblockLogicOrNull(activity: String, name: String): List<SketchwareBlock>? =
         getBlock("$activity.java_${name}_moreBlock")
 
     /**
-     * Get logic of event.
+     * Gets logic of moreblock.
+     * @return blocks in moreblock or null if activity / moreblock doesn't exists.
+     * @throws MoreblocksNotFoundException if activity / moreblock doesn't exists.
+     */
+    @Throws(MoreblockNotFoundException::class)
+    suspend fun getMoreblockLogic(activity: String, name: String) =
+        getMoreblockLogicOrNull(activity, name) ?: throw MoreblockNotFoundException(activity, name)
+
+    /**
+     * Gets logic of event.
      * @return blocks in event.
      */
-    suspend fun getEventLogic(activity: String, targetId: String, eventName: String) =
+    suspend fun getEventLogicOrNull(activity: String, targetId: String, eventName: String) =
         getBlock<SketchwareBlock>("$activity.java_${targetId}_$eventName")
+
+    /**
+     * Gets logic of event.
+     * @throws [EventNotFoundException] if event not found.
+     * @return blocks in event.
+     */
+    @Throws(EventNotFoundException::class)
+    suspend fun getEventLogic(activity: String, targetId: String, eventName: String) =
+        getEventLogicOrNull(activity, targetId, eventName)
+            ?: throw EventNotFoundException(activity, eventName, targetId)
 
     /**
      * Get blocks in onCreate. Sketchware doesn't mark it as event (wtf xdd),
      * that's why there is additional method.
+     * @return blocks in onCreate or null if no onCreate found.
+     */
+    suspend fun getOnCreateLogicOrNull(activity: String) =
+        getBlock<SketchwareBlock>("$activity.java_onCreate_initializeLogic")
+
+    /**
+     * Gets blocks in onCreate. Sketchware doesn't mark it as event (wtf xdd),
+     * that's why there is additional method.
+     * @throws [OnCreateNotFoundException] if onCreate not found for [activity].
      * @return blocks in onCreate
      */
+    @Throws(OnCreateNotFoundException::class)
     suspend fun getOnCreateLogic(activity: String) =
-        getBlock<SketchwareBlock>("$activity.java_onCreate_initializeLogic")
+        getOnCreateLogicOrNull(activity) ?: throw OnCreateNotFoundException(activity)
 
     /**
      * Edit onCreate event.
