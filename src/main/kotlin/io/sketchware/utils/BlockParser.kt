@@ -16,12 +16,7 @@ object BlockParser {
         return array
     }
 
-    inline fun <reified T> toSaveableValue(list: List<T>): String {
-        var output = ""
-        list.forEach {
-            output += "\n${it.toJson()}"
-        }
-        return output
-    }
+    inline fun <reified T> toSaveableValue(list: List<T>) =
+        list.joinToString { "\n${it.toJson()}" }
 
 }

@@ -34,14 +34,15 @@ class Exportable(
         /**
          * Generates list of items from folder.
          * @param folder The folder where the items will be saved to the [List].
+         * @param asPath internal path to save.
          * @return [List] of [ExportableItem] which were obtained from the folder.
          */
-        suspend fun getItemsFromFolder(folder: File): List<ExportableItem> {
+        suspend fun getItemsFromFolder(folder: File, asPath: String): List<ExportableItem> {
             val output = mutableListOf<ExportableItem>()
             folder.getListFiles()?.forEach {
                 if (it.isDirectory)
-                    output.addAll(getItemsFromFolder(folder))
-                else output.add(ExportableItem(folder.parentFile.name, folder.name, it.readBytes()))
+                    output.addAll(getItemsFromFolder(it, "$asPath/${it.name}"))
+                else output.add(ExportableItem(asPath, it.name, it.readBytes()))
             }
             return output
         }

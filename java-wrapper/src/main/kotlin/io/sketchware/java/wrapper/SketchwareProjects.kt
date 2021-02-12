@@ -1,6 +1,6 @@
 package io.sketchware.java.wrapper
 
-import io.sketchware.SketchwareProjects
+import io.sketchware.ProjectsManager
 import io.sketchware.project.SketchwareProject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -10,14 +10,14 @@ import java.io.File
 
 class SketchwareProjects : CoroutineScope {
 
-    private val manager: SketchwareProjects
+    private val manager: ProjectsManager
 
     constructor(sketchcodeFolder: File) {
-        manager = SketchwareProjects(sketchcodeFolder)
+        manager = ProjectsManager(sketchcodeFolder)
     }
 
     constructor(sketchcodeFolder: String) {
-        manager = SketchwareProjects(sketchcodeFolder)
+        manager = ProjectsManager(sketchcodeFolder)
     }
 
     fun getNextFreeId() = manager.nextFreeId

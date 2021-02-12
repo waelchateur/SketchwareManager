@@ -1,5 +1,6 @@
 package io.sketchware.models.sketchware
 
+import io.sketchware.encryptor.FileEncryptor
 import io.sketchware.models.exportable.ProjectExportableConfig
 import io.sketchware.models.exportable.ProjectType
 import io.sketchware.utils.*
@@ -72,13 +73,8 @@ data class ProjectFilesLocations(
 
     suspend fun toExportable(): Exportable {
         val exportableItems = mutableListOf<ExportableItem>()
-        val config = ProjectExportableConfig(
-            System.currentTimeMillis(),
-            if (data is SketchwareProProjectDataFiles) ProjectType.SketchwarePro
-            else ProjectType.Sketchware
-        )
-        exportableItems.add(ExportableItem(fileName = "export.config", value = config.toJson().toByteArray()))
-        exportableItems.addAll(Exportable.getItemsFromFolder(data.dataFolder))
+        //exportableItems.add(ExportableItem(fileName = "export.config", value = this.toJson().toByteArray()))
+        exportableItems.addAll(Exportable.getItemsFromFolder(data.dataFolder, "data"))
         resources.fonts.getListFiles()?.forEach {
             exportableItems.add(ExportableItem("resources/fonts", it.name, it.readFile()))
         }
@@ -91,7 +87,7 @@ data class ProjectFilesLocations(
         resources.icons.getListFiles()?.forEach {
             exportableItems.add(ExportableItem("resources/icons", it.name, it.readFile()))
         }
-        exportableItems.add(ExportableItem(fileName = "projectConfig.swe", value = mysc.configFile.readFile()))
+        exportableItems.add(ExportableItem(fileName = "projectConfig.config", value = FileEncryptor.decrypt(mysc.configFile.readFile())))
         return Exportable(exportableItems)
     }
 

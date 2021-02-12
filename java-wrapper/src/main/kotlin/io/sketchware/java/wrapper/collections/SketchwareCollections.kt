@@ -1,10 +1,10 @@
 package io.sketchware.java.wrapper.collections
 
-import io.sketchware.collections.SketchwareCollections
+import io.sketchware.collections.CollectionsManager
 import java.io.File
 
 class SketchwareCollections(private val file: File) {
-    private val manager = SketchwareCollections(file)
+    private val manager = CollectionsManager(file)
 
     fun getMoreblocksManager() = SketchwareCollection(File(file, "more_block/list"))
     fun getImagesManager() = SketchwareCollection(File(file, "image/list"))

@@ -91,6 +91,7 @@ open class SketchwareProProject(
      * by user. Use file at ../.sketchware/data/settings.json)
      * @return [Exportable] with all files which can be saved as folder or zip.
      */
+    @UnsafeAPI
     suspend fun exportable(
         paletteFile: File,
         blocksFile: File,

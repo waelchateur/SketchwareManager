@@ -1,17 +1,18 @@
 package io.sketchware.models.sketchwarepro
 
+import io.sketchware.utils.StringBooleanSerializer
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ProguardConfig(
     /**
-     * String representation of boolean.
      * Responsible for status of Proguard.
      */
-    val enabled: String,
+    @Serializable(StringBooleanSerializer::class)
+    val enabled: Boolean,
     /**
-     * String representation of boolean.
      * Responsible for the on/off state of the debug file generations.
      */
-    val debug: String
+    @Serializable(StringBooleanSerializer::class)
+    val debug: Boolean
 )

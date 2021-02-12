@@ -3,7 +3,7 @@ package io.sketchware.collections
 import io.sketchware.models.exceptions.SketchwareFolderError
 import java.io.File
 
-class SketchwareCollections(private val collectionsFolder: File) {
+class CollectionsManager(private val collectionsFolder: File) {
     constructor(collectionsPath: String) : this(File(collectionsPath))
 
     init {

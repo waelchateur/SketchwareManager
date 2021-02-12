@@ -14,6 +14,7 @@ import java.io.File
  * @param file File which usually located at ../.sketchware/data/%PROJECT_ID%/view
  * @throws SketchwareFileError if file doesn't exist or it isn't a file.
  */
+@UnsafeAPI
 class ViewManager(private val file: File) {
     private var decryptedString: String? = null
 

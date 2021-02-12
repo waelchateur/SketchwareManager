@@ -1,18 +1,38 @@
 package io.sketchware.models.sketchware
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import io.sketchware.utils.StringNumberSerializer
+import kotlinx.serialization.*
 
+/**
+ * Data class with data about the project name, id, settings for the theme, etc.
+ * It serializes usually from ../.sketchware/mysc/list/[projectId]/project
+ */
 @Serializable
 data class ProjectConfig(
+    /**
+     * The version of Sketchware on which the project was last modified.
+     */
     @SerialName("sketchware_ver")
     var sketchwareVersion: Double,
+    /**
+     * Unique digital identifier for the project.
+     */
     @SerialName("sc_id")
-    var projectId: String,
+    @Serializable(StringNumberSerializer::class)
+    var projectId: Int,
+    /**
+     * Project's package name (example: com.android.test)
+     */
     @SerialName("my_sc_pkg_name")
     var packageName: String,
     @SerialName("my_app_name")
+    /**
+     * Project's app name
+     */
     var appName: String,
+    /**
+     * Project's app version code (Used to indicate new versions.)
+     */
     @SerialName("sc_ver_code")
     var appVersionCode: String,
     @SerialName("color_control_highlight")
@@ -29,8 +49,14 @@ data class ProjectConfig(
     var colorControlNormal: Double,
     @SerialName("sc_ver_name")
     var appVersionName: String,
+    /**
+     * Project name (Not to be confused with [appName].)
+     */
     @SerialName("my_ws_name")
     var projectName: String,
+    /**
+     * Is a custom icon installed.
+     */
     @SerialName("custom_icon")
     var customIcon: Boolean
 )

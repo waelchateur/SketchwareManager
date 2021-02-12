@@ -43,6 +43,9 @@ class SketchwareProCustomBlocksManager(
         }
     }
 
+    suspend fun nextFreeGroupId() =
+        getCustomBlocks().maxOf { it.groupId } + 1
+
     /**
      * Removes group of blocks.
      * @param groupId Custom block group id.

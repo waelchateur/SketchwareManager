@@ -1,11 +1,13 @@
 package io.sketchware.models.sketchware
 
+import io.sketchware.utils.StringNumberSerializer
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class SketchwareBlock(
     val color: Int,
-    val id: String,
+    @Serializable(StringNumberSerializer::class)
+    val id: Int,
     val nextBlock: Int,
     val opCode: String,
     val parameters: List<String>,

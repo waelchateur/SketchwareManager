@@ -70,6 +70,7 @@ open class SketchwareProject(
     /**
      * An instance of the [Exportable] class for exporting a project based on [filesLocations].
      */
+    @UnsafeAPI
     suspend fun getDefaultExportable(): Exportable {
         return filesLocations.toExportable()
     }
@@ -108,6 +109,7 @@ open class SketchwareProject(
      * Responsible for the views content (xml).
      * @return [ViewManager] based on [filesLocations] variable paths.
      */
+    @UnsafeAPI
     open val viewManager by lazy { ViewManager(filesLocations.data.viewFile) }
 
     /**
@@ -119,7 +121,7 @@ open class SketchwareProject(
         val currentConfig: ProjectConfig = String(
             FileEncryptor.decrypt(filesLocations.mysc.configFile.readBytes())
         ).serialize()
-        val newConfig = currentConfig.copy(projectId = "$newId")
+        val newConfig = currentConfig.copy(projectId = newId)
         destination.projectFile.writeBytes(
             FileEncryptor.encrypt(newConfig.toJson().toByteArray())
         )
