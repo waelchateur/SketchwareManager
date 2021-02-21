@@ -38,7 +38,7 @@ class SketchwareProCustomBlocksManager(
                 id,
                 palette.name,
                 palette.color,
-                customBlocks.filter { it.palette.toInt() == id }
+                customBlocks.filter { it.palette == id }
             )
         }
     }
@@ -69,7 +69,7 @@ class SketchwareProCustomBlocksManager(
         val list = getCustomBlocks().toMutableList()
         val group = list.first { it.groupId == groupId }
         val newBlocks = group.blocks.toMutableList().apply {
-            removeIf { it.palette.toInt() == groupId && it.name == name }
+            removeIf { it.palette == groupId && it.name == name }
         }
         saveBlocks(list.apply {
             set(indexOf(group), group.copy(blocks = newBlocks))

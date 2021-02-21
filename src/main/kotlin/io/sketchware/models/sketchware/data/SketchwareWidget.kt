@@ -9,14 +9,14 @@ data class SketchwareWidget(
 )
 
 @Serializable
-class SketchwareImage(
+data class SketchwareImage(
     var rotate: Int = 0,
     var scaleType: String? = null,
     var resName: String? = null
 )
 
 @Serializable
-class SketchwareLayout(
+data class SketchwareLayout(
     var backgroundColor: Int = 0,
     var borderColor: Int = 0,
     var gravity: Int = 0,
@@ -37,7 +37,7 @@ class SketchwareLayout(
 )
 
 @Serializable
-class SketchwareText(
+data class SketchwareText(
     var hint: String? = null,
     var hintColor: Int = 0,
     var imeOption: Int = 0,
@@ -52,7 +52,7 @@ class SketchwareText(
 )
 
 @Serializable
-class SketchwareWidgetRoot(
+data class SketchwareWidgetRoot(
     var adSize: String? = null,
     var adUnitId: String? = null,
     var alpha: Double = 0.0,

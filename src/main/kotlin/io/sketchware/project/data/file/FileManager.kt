@@ -20,8 +20,10 @@ class FileManager(private val file: File) {
     private var decryptedString: String? = null
 
     init {
-        if (!file.isFile)
+        if (file.isDirectory)
             throw SketchwareFileError(file.path)
+        if(!file.exists())
+            decryptedString = "@activity\n\n@customview"
     }
 
     private suspend fun getDecryptedString(): String {

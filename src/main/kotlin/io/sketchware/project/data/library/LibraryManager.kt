@@ -11,15 +11,17 @@ import java.io.File
 /**
  * The class is responsible for managing the libraries of the project.
  * @param file File which which is usually found along the path ../.sketchware/data/%PROJECT_ID%/library.
- * @throws [SketchwareFileError] if [file] doesn't exist or it isn't a file.
+ * @throws [SketchwareFileError] if [file] isn't a file.
  */
 class LibraryManager(private val file: File) {
     private var list: List<BlockDataModel>? = null
     private var decryptedString: String? = null
 
     init {
-        if (!file.isFile)
+        if (file.isDirectory)
             throw SketchwareFileError(file.path)
+        if(!file.exists())
+            decryptedString = ""
     }
 
     private suspend fun getDecryptedString(): String {

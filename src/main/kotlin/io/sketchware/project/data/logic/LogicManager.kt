@@ -16,20 +16,22 @@ import java.io.File
  * which is usually found along the path ../.sketchware/data/%PROJECT_ID%/logic.
  * It stores data about variables, moreblocks, events, components and their states / logic.
  * @param [file] File with project logic.
- * @throws [SketchwareFileError] if [file] doesn't exists or not a file.
+ * @throws [SketchwareFileError] if [file] is folder.
  */
 open class LogicManager(private val file: File) {
     private var decryptedString: String? = null
 
     init {
-        if (!file.isFile || !file.exists())
+        if (file.isDirectory)
             throw SketchwareFileError(file.path)
+        if(!file.exists())
+            decryptedString = ""
     }
 
     private suspend fun getDecryptedString(): String {
         if (decryptedString == null)
             decryptedString = String(FileEncryptor.decrypt(file.readFile()))
-        return decryptedString ?: throw error("list shouldn't be null")
+        return decryptedString ?: throw error("decrypted value shouldn't be null")
     }
 
     private suspend inline fun <reified T> getBlock(name: String): List<T>? =
@@ -210,7 +212,7 @@ open class LogicManager(private val file: File) {
      * @return true or false in depends on removing status (if isn't something changed, it returns false).
      */
     suspend fun removeEvent(activity: String, eventName: String, targetId: String): Boolean {
-        val events = ArrayList(getEvents(activity) ?: return false)
+        val events = ArrayList(getEvents(activity))
         if (!events.removeIf
             { it.name == eventName && it.targetId == targetId }
         ) return false
@@ -254,7 +256,7 @@ open class LogicManager(private val file: File) {
      * @param event Sketchware Event, be careful with adding
      */
     suspend fun addEvent(activity: String, event: SketchwareEvent, blocks: List<SketchwareBlock>) {
-        val array = ArrayList(getEvents(activity) ?: ArrayList())
+        val array = ArrayList(getEvents(activity))
         array.add(event)
         saveEvents(activity, array)
         saveEventLogic(activity, event.name, event.targetId, blocks)
@@ -275,7 +277,7 @@ open class LogicManager(private val file: File) {
      * @return true or false in depends on removing status (if isn't something changed, it returns false).
      */
     suspend fun removeComponent(activity: String, componentId: String): Boolean {
-        val components = ArrayList(getComponents(activity) ?: return false)
+        val components = ArrayList(getComponents(activity))
         if (!components.removeIf { it.id == componentId }) return false
         saveComponents(activity, components)
         return true
@@ -322,7 +324,7 @@ open class LogicManager(private val file: File) {
      * @return delete status. If nothing deleted returns false.
      */
     suspend fun removeVariable(activity: String, variable: SketchwareVariable): Boolean {
-        val variables = ArrayList(getVariables(activity) ?: return false)
+        val variables = ArrayList(getVariables(activity))
         return variables.remove(variable).also { if (it) saveVariables(activity, variables) }
     }
 
@@ -361,7 +363,7 @@ open class LogicManager(private val file: File) {
      * @param moreblock moreblock model with data about moreblock.
      */
     suspend fun removeMoreblock(activity: String, moreblock: SketchwareMoreblock): Boolean {
-        val moreblocks = ArrayList(getMoreblocks(activity) ?: return false)
+        val moreblocks = ArrayList(getMoreblocks(activity))
         removeLogic(activity, "${moreblock.name}_moreBlock")
         return moreblocks.remove(moreblock).also { if (it) saveMoreblocks(activity, moreblocks) }
     }

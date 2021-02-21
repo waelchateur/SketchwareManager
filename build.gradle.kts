@@ -35,51 +35,31 @@ val localProperties = project.rootProject.file("local.properties")
     ?.let(File::getAbsolutePath)
     ?.let(::loadProperties)
 
+val libVersion = "dev-2.3.0"
+
 allprojects {
     group = "io.sketchware"
-    version = "dev-2.2.9"
+    version = libVersion
 
     apply(plugin = "maven-publish")
 
     publishing {
-        publications.filterIsInstance<MavenPublication>().forEach { publication ->
-            publication.pom {
-                name.set(project.name)
-                description.set(project.description)
-                url.set(vcs)
-
-                developers {
-                    developer {
-                        id.set("y9neon")
-                        name.set("Vadim Kotlinov")
-                    }
-                }
-
-                scm {
-                    url.set(vcs)
-                    tag.set("${project.version}")
-                }
+        apply(plugin = "maven-publish")
+        publications {
+            create<MavenPublication>("Deploy") {
+                groupId = group as String
+                artifactId = "SketchwareManager"
+                version = libVersion
             }
         }
 
         repositories {
             maven {
-                name = "bintray"
-                url = uri("https://api.bintray.com/maven/kotlingang/maven/$projectName/;publish=1;override=1")
-
-                val (bintrayUser, bintrayApiKey) = if (localProperties != null) {
-                    localProperties.getProperty("bintrayUser") to localProperties.getProperty("bintrayApiKey")
-                } else {
-                    null to null
-                }
-
-                if (bintrayUser == null || bintrayApiKey == null) {
-                    System.err.println("Missing bintray authorization (bintrayUser, bintrayApiKey in local.properties)")
-                } else {
-                    credentials {
-                        username = bintrayUser
-                        password = bintrayApiKey
-                    }
+                name = "sketchware-api"
+                url = uri(localProperties!!["serverURI"]!!)
+                credentials {
+                    username = (localProperties["username"] as String?)!!
+                    password = (localProperties["password"] as String?)!!
                 }
             }
         }

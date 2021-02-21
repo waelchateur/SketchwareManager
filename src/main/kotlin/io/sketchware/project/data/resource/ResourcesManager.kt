@@ -21,6 +21,8 @@ class ResourcesManager(private val file: File) {
     init {
         if (!file.isFile)
             throw SketchwareFileError(file.path)
+        if(!file.exists())
+            decryptedString = ""
     }
 
     private suspend fun getDecryptedString(): String {
@@ -31,25 +33,22 @@ class ResourcesManager(private val file: File) {
 
     /**
      * Gets list of images as [SketchwareProjectResource] class.
-     * @throws [ResourcesNotFoundException] if resources not found.
      */
-    suspend fun getImages(): List<SketchwareProjectResource> =
+    suspend fun getImages(): List<SketchwareProjectResource>? =
         getDecryptedString().getByTag("images")?.toBlockDataModel()
-            ?.values?.map { it.toModel() } ?: throw ResourcesNotFoundException(file.path, "images")
+            ?.values?.map { it.toModel() }
 
     /**
      * Gets list of sounds as [SketchwareProjectResource] class.
-     * @throws [ResourcesNotFoundException] if resources not found.
      */
-    suspend fun getSounds(): List<SketchwareProjectResource> =
+    suspend fun getSounds(): List<SketchwareProjectResource>? =
         getDecryptedString().getByTag("sounds")?.toBlockDataModel()
-            ?.values?.map { it.toModel() } ?: throw ResourcesNotFoundException(file.path, "sounds")
+            ?.values?.map { it.toModel() }
 
     /**
      * Gets list of fonts as [SketchwareProjectResource] class.
-     * @throws [ResourcesNotFoundException] if resources not found.
      */
-    suspend fun getFonts(): List<SketchwareProjectResource> =
+    suspend fun getFonts(): List<SketchwareProjectResource>? =
         getDecryptedString().getByTag("fonts")?.toBlockDataModel()
-            ?.values?.map { it.toModel() } ?: throw ResourcesNotFoundException(file.path, "fonts")
+            ?.values?.map { it.toModel() }
 }

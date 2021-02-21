@@ -10,7 +10,7 @@ inline fun <reified T> String.serialize(): T {
     return Json.decodeFromString(this)
 }
 
-inline fun <reified T> String.serializeOrNull(): T? {
+internal inline fun <reified T> String.serializeOrNull(): T? {
     return try {
         Json.decodeFromString(this)
     } catch (e: Exception) {
