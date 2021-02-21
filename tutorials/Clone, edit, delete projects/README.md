@@ -12,7 +12,7 @@ change, delete, clone projects without any problems.
 It's easy to change some data in the project config:
 
 ```kotlin
-val projects = SketchwareProjects(_path_).getProjects()[0] // get projects list
+val projects = ProjectsManager(_path_).getProjects()[0] // get projects list
 val project = projects[0] // let's change first project in the list
 // let's call lambda with ProjectConfig context
 project.editConfig {
@@ -26,7 +26,7 @@ project.editConfig {
 #### Also, library gives feature to clone project very easy:
 
 ```kotlin
-val manager = SketchwareProjects("..")
+val manager = ProjectsManager("..")
 val project = projects[0]
 project.clone(manager.nextFreeId, ProjectDestination.from(___path___)) // nextFreeId default variable which gives free id for new project
 ```
@@ -34,7 +34,7 @@ project.clone(manager.nextFreeId, ProjectDestination.from(___path___)) // nextFr
 Or if you need change default folders to clone, for example, to make a backup feature you can do next:
 
 ```kotlin
-val manager = SketchwareProjects("..")
+val manager = ProjectsManager("..")
 val project = projects[0]
 project.clone(manager.nextFreeId, ProjectDestination(
     File("project_file_dest"), File("data_dir_dest"),

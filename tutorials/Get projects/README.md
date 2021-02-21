@@ -16,7 +16,7 @@ Let's check it out:
 
 ```kotlin
 suspend fun main() {
-    val projects = SketchwareProjects(sketchware_folder).getProjects()
+    val projects = ProjectsManager(sketchware_folder).getProjects()
     // something after it..
 }
 ```
@@ -25,7 +25,7 @@ suspend fun main() {
 
 ```kotlin
 override fun onCreate(b: Bundle) = scope.launch {
-    val projects = SketchwareProjects(sketchware_folder).getProjects()
+    val projects = ProjectsManager(sketchware_folder).getProjects()
     // something after it..
 }
 ```

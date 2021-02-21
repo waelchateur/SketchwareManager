@@ -1,6 +1,6 @@
 # Sketchware Manager
 
-Coroutine-based library for managing sketchware projects, collections and etc.
+Coroutine-based library for managing sketchware projects, collections, etc.
 
 ## Projects 📂
 
@@ -9,7 +9,7 @@ The library supports Sketchware, Sketchware Pro projects ✔
 ### Example:
 
 ```kotlin
-val manager = SketchwareProjects("../.sketchware")
+val manager = ProjectsManager("../.sketchware")
 manager.getProjects().forEach { project ->
     when(project) {
         is SketchwareProProject -> println("I am a sketchware pro project")
