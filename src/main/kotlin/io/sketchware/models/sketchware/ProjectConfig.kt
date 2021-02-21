@@ -1,7 +1,8 @@
 package io.sketchware.models.sketchware
 
 import io.sketchware.utils.StringNumberSerializer
-import kotlinx.serialization.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Data class with data about the project name, id, settings for the theme, etc.

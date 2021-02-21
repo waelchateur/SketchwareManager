@@ -1,9 +1,10 @@
 package io.sketchware.models.sketchware
 
 import io.sketchware.encryptor.FileEncryptor
-import io.sketchware.models.exportable.ProjectExportableConfig
-import io.sketchware.models.exportable.ProjectType
-import io.sketchware.utils.*
+import io.sketchware.utils.Exportable
+import io.sketchware.utils.ExportableItem
+import io.sketchware.utils.getListFiles
+import io.sketchware.utils.readFile
 import java.io.File
 
 data class ProjectFilesLocations(
@@ -87,7 +88,12 @@ data class ProjectFilesLocations(
         resources.icons.getListFiles()?.forEach {
             exportableItems.add(ExportableItem("resources/icons", it.name, it.readFile()))
         }
-        exportableItems.add(ExportableItem(fileName = "projectConfig.config", value = FileEncryptor.decrypt(mysc.configFile.readFile())))
+        exportableItems.add(
+            ExportableItem(
+                fileName = "projectConfig.config",
+                value = FileEncryptor.decrypt(mysc.configFile.readFile())
+            )
+        )
         return Exportable(exportableItems)
     }
 

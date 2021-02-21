@@ -1,7 +1,6 @@
 package io.sketchware.data
 
 import io.sketchware.models.exceptions.SketchwareFileError
-import io.sketchware.models.sketchware.data.SketchwareEvent
 import io.sketchware.models.sketchwarepro.data.CustomEvent
 import io.sketchware.utils.readFile
 import io.sketchware.utils.serialize

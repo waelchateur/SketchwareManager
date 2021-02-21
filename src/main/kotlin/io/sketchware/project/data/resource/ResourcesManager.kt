@@ -1,7 +1,6 @@
 package io.sketchware.project.data.resource
 
 import io.sketchware.encryptor.FileEncryptor
-import io.sketchware.models.exceptions.ResourcesNotFoundException
 import io.sketchware.models.exceptions.SketchwareFileError
 import io.sketchware.models.sketchware.data.SketchwareProjectResource
 import io.sketchware.utils.SketchwareDataParser.getByTag
@@ -21,7 +20,7 @@ class ResourcesManager(private val file: File) {
     init {
         if (!file.isFile)
             throw SketchwareFileError(file.path)
-        if(!file.exists())
+        if (!file.exists())
             decryptedString = ""
     }
 

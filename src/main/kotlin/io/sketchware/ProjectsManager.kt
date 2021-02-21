@@ -10,8 +10,6 @@ import io.sketchware.project.SketchwareProProject
 import io.sketchware.project.SketchwareProject
 import io.sketchware.resources.blocks.SketchwareProCustomBlocksManager
 import io.sketchware.utils.*
-import io.sketchware.utils.getListFiles
-import io.sketchware.utils.serialize
 import java.io.File
 
 class ProjectsManager(private val sketchwareFolder: File) {
@@ -45,7 +43,7 @@ class ProjectsManager(private val sketchwareFolder: File) {
             .copy(projectId = nextFreeId)
         createProject(cfg)
         val skProCustomDir = File(folder, "requirements/sketchwarePro/custom")
-        if(skProCustomDir.exists()) {
+        if (skProCustomDir.exists()) {
             getSketchwareProSettingsOrDefault().apply {
                 SketchwareCustomUtils.insertBlocks(
                     SketchwareProCustomBlocksManager(File(blocksFilePath), File(paletteFilePath)),

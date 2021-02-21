@@ -24,7 +24,7 @@ open class LogicManager(private val file: File) {
     init {
         if (file.isDirectory)
             throw SketchwareFileError(file.path)
-        if(!file.exists())
+        if (!file.exists())
             decryptedString = ""
     }
 

@@ -12,17 +12,18 @@ internal object SketchwareCustomUtils {
     ) {
         val customBlocks = blockManager.getCustomBlocks()
         list.forEach {
-            if(!customBlocks.contains(it))
+            if (!customBlocks.contains(it))
                 blockManager.addBlocksGroup(it.copy(groupId = blockManager.nextFreeGroupId()))
         }
     }
+
     suspend fun insertMenus(
         menusManager: SketchwareProCustomMenusManager,
         list: List<CustomMenu>
     ) {
         val menus = menusManager.getCustomMenus()
         list.forEach {
-            if(!menus.contains(it))
+            if (!menus.contains(it))
                 menusManager.addCustomMenu(it)
         }
     }

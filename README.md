@@ -65,10 +65,10 @@ More: [Collections tutorial](https://github.com/y9neon/SketchwareManager/tree/ma
 
 ```groovy
 repositories {
-    maven { url 'https://dl.bintray.com/kotlingang/maven' }
+    maven { url 'https://sketchcode.fun/dl' }
 }
 dependencies {
-    implementation 'io.sketchware:Sketchware-Manager:alpha-2.2.9'
+    implementation 'io.sketchware:Sketchware-Manager:dev-2.3.0'
 }
 ```
 
@@ -76,22 +76,9 @@ dependencies {
 
 ```kotlin
 repositories {
-    maven("https://dl.bintray.com/kotlingang/maven")
+    maven("https://sketchcode.fun/dl")
 }
 dependencies {
-    implementation("io.sketchware:Sketchware-Manager:alpha-2.2.9")
+    implementation("io.sketchware:Sketchware-Manager:dev-2.3.0")
 }
 ```
-
-#### Java implementation
-
-To use the library in Java, you need to add a dependency:
-
-```groovy
-dependencies {
-    implementation 'io.sketchware:java-wrapper:alpha-2.2.9'
-}
-```
-
-More:
-[Java tutorial](https://github.com/y9neon/SketchwareManager/tree/master/tutorials/How%20to%20use%20library%20in%20Java)
