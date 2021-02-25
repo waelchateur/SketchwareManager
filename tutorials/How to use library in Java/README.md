@@ -1,5 +1,4 @@
-# How to use library in Java
-
+# How to use library in Java (Deprecated)
 Since the library was originally focused on Kotlin and used suspend functions
 (which do not work in Java), you need to add one more dependency:
 
